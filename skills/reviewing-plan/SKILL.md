@@ -1,10 +1,10 @@
 ---
-name: review-plan
-description: "Use when a PLAN+TASKS markdown file has been written (e.g. by plan-from-ticket / generate-tasks) and the user wants it judged against its ticket BEFORE any code is written. Triggers on 'review this plan', 'is this plan good to proceed', 'check the plan before we code', 'AI-as-judge on the plan'. Reviews the plan artifact, not code — for post-code review use the review skill."
+name: reviewing-plan
+description: "Use when a PLAN+TASKS markdown file has been written (e.g. by plan-from-ticket / generate-tasks) and the user wants it judged against its ticket BEFORE any code is written. Triggers on 'review this plan', 'is this plan good to proceed', 'check the plan before we code', 'AI-as-judge on the plan'. Reviews the plan artifact, not code — for post-code review use the reviewing-code skill."
 license: MIT
 ---
 
-# Review Plan
+# Reviewing Plan
 
 Judge a **PLAN+TASKS markdown file against its ticket, before any code is written.** The plan is the cheapest place to catch scope creep, over-engineering, breaking changes, and bad task decomposition — fixing them here is a markdown edit, not a code rewrite.
 

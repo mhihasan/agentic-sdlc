@@ -20,12 +20,12 @@ plan-from-ticket ──► PLAN-<KEY>.md (beside the ticket)
    [YOU ARE HERE] ──► append a "# Tasks" section INTO the same PLAN file
         │
         ▼
-   review-plan ──► develop-from-tasks
+   reviewing-plan ──► develop-from-tasks
 ```
 
 - **Input:** an existing plan file — typically a `PLAN-<KEY>.md` from `plan-from-ticket`, or a direct brief for a simple, well-understood task.
 - **Output:** task specs **appended into the same plan file**, so the downstream reviewer and implementer read one self-contained PLAN+TASKS document.
-- **What runs after you:** `review-plan` judges the PLAN+TASKS before any code; then `develop-from-tasks` implements via TDD. Point the developer to `review-plan` next — never to implementation directly.
+- **What runs after you:** `reviewing-plan` judges the PLAN+TASKS before any code; then `develop-from-tasks` implements via TDD. Point the developer to `reviewing-plan` next — never to implementation directly.
 
 ## Why Tasks Live in the Plan File
 
@@ -159,10 +159,10 @@ A well-sized task supports a tight TDD cycle: ~2-4 production files, ~3-8 test s
 - Skip the test-plan-draft step — the developer must agree on scenarios first.
 - Modify the plan content above your task specs — you only append.
 - Hardcode file paths — infer them from the project's conventions.
-- Point the developer to implementation as the next step — point them to `review-plan` first.
+- Point the developer to implementation as the next step — point them to `reviewing-plan` first.
 
 ## Important Reminders
 
 - Read CLAUDE.md (if present) and scan relevant source/test files before drafting the test plan.
 - Your output is a task spec, not code. Stay in your lane.
-- When done, append the tasks and tell the developer the next step is **review-plan** (then **develop-from-tasks** to implement): e.g. *"Tasks appended to PLAN-<KEY>.md. Next: run review-plan on it before coding."*
+- When done, append the tasks and tell the developer the next step is **reviewing-plan** (then **develop-from-tasks** to implement): e.g. *"Tasks appended to PLAN-<KEY>.md. Next: run reviewing-plan on it before coding."*
