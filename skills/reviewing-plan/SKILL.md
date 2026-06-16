@@ -1,6 +1,6 @@
 ---
 name: reviewing-plan
-description: "Use when a PLAN+TASKS markdown file has been written (e.g. by plan-from-ticket / generate-tasks) and the user wants it judged against its ticket BEFORE any code is written. Triggers on 'review this plan', 'is this plan good to proceed', 'check the plan before we code', 'AI-as-judge on the plan'. Reviews the plan artifact, not code — for post-code review use the reviewing-code skill."
+description: "Use when a PLAN+TASKS markdown file has been written (e.g. by planning-from-ticket / generating-tasks) and the user wants it judged against its ticket BEFORE any code is written. Triggers on 'review this plan', 'is this plan good to proceed', 'check the plan before we code', 'AI-as-judge on the plan'. Reviews the plan artifact, not code — for post-code review use the reviewing-code skill."
 license: MIT
 ---
 
@@ -25,7 +25,7 @@ You are an **AI-as-judge on the plan**. You produce a structured verdict with pe
 
 - A `PLAN-*.md` (or ticket file with a Tasks section) exists and the user wants it checked before coding.
 - "Is this plan good to proceed?" / "review the plan against the ticket" / "AI-as-judge before we code."
-- Slots between `generate-tasks` and `develop-from-tasks`.
+- Slots between `generating-tasks` and `implementing-tasks`.
 
 **When NOT to use:**
 - No plan written yet → use a planning skill first.

@@ -1,9 +1,9 @@
 ---
-name: jira-to-markdown
+name: fetching-tickets
 description: Use when the user provides a Jira ticket URL or key and wants it saved as a local markdown file with all assets (images, attachments). Triggers on phrases like "pull this ticket", "save ticket to markdown", "download ticket", "create a local copy of this Jira issue".
 ---
 
-# jira-to-markdown
+# fetching-tickets
 
 Pull a Jira ticket and write it to a local markdown file that faithfully mirrors the ticket's section order and includes all assets downloaded locally.
 

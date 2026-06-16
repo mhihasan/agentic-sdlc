@@ -1,10 +1,10 @@
 ---
-name: plan-from-ticket
+name: planning-from-ticket
 description: "Use when the user points to a local Jira ticket or spec markdown file and wants an implementation plan written to a PLAN file beside it. Triggers on phrases like 'read this ticket and make a plan', 'plan PROJ-1234', 'write an implementation plan for this spec'. Assumes the ticket is already on disk — does not fetch from Jira."
 license: MIT
 ---
 
-# Plan From Ticket
+# Planning From Ticket
 
 Turn a **local ticket or spec file** into a reviewed implementation plan written **beside it** as `PLAN-<KEY>.md`.
 
