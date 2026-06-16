@@ -325,7 +325,7 @@ Rewrites a messy branch history into clean conventional commits. Produces a huma
 | | |
 |---|---|
 | **Input** | Current git branch (reads history automatically) |
-| **Output** | `local-dev/plans/commit-plan-<TICKET>.md` with proposed commit sequence and a ready-to-run bash script |
+| **Output** | `tickets/<TICKET>/commit-plan-<TICKET>.md` if the ticket directory exists, otherwise `local-dev/plans/commit-plan-<TICKET>.md`; contains proposed commit sequence and a ready-to-run bash script |
 | **Auto mode** | Supported — produces plan without pausing; **always halts before executing any git commands** |
 
 ```bash
