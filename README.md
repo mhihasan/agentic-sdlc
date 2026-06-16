@@ -71,7 +71,12 @@ This pipeline is the **spine** (artifact-centric, Jira-native, resumable). The
 
 **The superpowers plugin is a required dependency for the full pipeline.**
 Steps [0], the `superpowers:*` sub-skills in [2]–[6], and [7] require it.
-Install it via the Claude Code plugins registry, then re-run `./install.sh` here.
+
+Install in Claude Code:
+```
+/plugin install superpowers@claude-plugins-official
+```
+Or visit https://claude.com/plugins/superpowers. Then re-run `./install.sh` here.
 
 ## Craft Skills
 

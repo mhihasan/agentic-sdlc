@@ -50,8 +50,9 @@ if [ ! -d "$SUPERPOWERS_DIR" ]; then
   echo "  This workflow composes superpowers skills at several pipeline steps:"
   echo "  test-driven-development, systematic-debugging, verification-before-completion,"
   echo "  using-git-worktrees, dispatching-parallel-agents, finishing-a-development-branch."
-  echo "  Install the superpowers plugin to unlock the full pipeline:"
-  echo "  https://www.anthropic.com/claude-code  (Plugins > superpowers)"
+  echo "  Install it in Claude Code:"
+  echo "    /plugin install superpowers@claude-plugins-official"
+  echo "  Or visit: https://claude.com/plugins/superpowers"
 fi
 
 echo ""
