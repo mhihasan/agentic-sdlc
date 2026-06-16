@@ -23,6 +23,19 @@ All notable changes to coding-agent-skills are documented here.
 - `reviewing-code` Next Steps: `crafting-commits` changed from suggestion to mandatory gate
 - README: hook rewritten, quickstart added, superpowers sub-skills table added, repo renamed to `coding-agent-skills`
 
+## [0.2.0](https://github.com/mhihasan/coding-agent-skills/compare/v0.1.0...v0.2.0) (2026-06-16)
+
+
+### Features
+
+* write commit plan to ticket directory when ticket dir exists ([b8e0da9](https://github.com/mhihasan/coding-agent-skills/commit/b8e0da97a8081314eb4b254f4705610082970f60))
+
+
+### Bug Fixes
+
+* replace shields.io badges with badgen.net ([2d7f5be](https://github.com/mhihasan/coding-agent-skills/commit/2d7f5becc7143650518548a845759b93c3a6da03))
+* replace shields.io badges with badgen.net to avoid token pool errors ([ef61277](https://github.com/mhihasan/coding-agent-skills/commit/ef6127771ac275fd99b73a48253573de0e3474cf))
+
 ## [0.1.0](https://github.com/mhihasan/coding-agent-skills/compare/v0.0.1...v0.1.0) (2026-06-16)
 
 
