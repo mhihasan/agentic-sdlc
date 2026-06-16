@@ -1,4 +1,4 @@
-# agent-skills
+# coding-agent-skills
 
 Generic engineering craft skills for AI coding assistants.
 
