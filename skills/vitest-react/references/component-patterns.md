@@ -2,11 +2,10 @@
 
 ## Table of Contents
 1. [Context Providers](#context-providers)
-2. [Custom Render Wrappers](#custom-render-wrappers)
-3. [Error Boundaries](#error-boundaries)
-4. [Portals](#portals)
-5. [Controlled vs Uncontrolled Inputs](#controlled-vs-uncontrolled-inputs)
-6. [Router-dependent Components](#router-dependent-components)
+2. [Error Boundaries](#error-boundaries)
+3. [Portals](#portals)
+4. [Controlled vs Uncontrolled Inputs](#controlled-vs-uncontrolled-inputs)
+5. [Router-dependent Components](#router-dependent-components)
 
 ---
 
