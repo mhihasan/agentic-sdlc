@@ -17,8 +17,7 @@ flowchart TD
     classDef sp fill:#dcfce7,stroke:#16a34a,color:#14532d
     classDef gate fill:#fee2e2,stroke:#dc2626,color:#7f1d1d
 
-    W(["[0] using-git-worktrees\nisolate workspace"]):::sp
-    FT["[1] fetching-tickets\nJira → TICKET-KEY.md · ✔ self-review"]:::pipe
+    ST(["[1] start-task\nJira URL/key or local file → branch · ✔ self-review"]):::sp
     PFT["[2] planning-from-ticket\nticket → PLAN-KEY.md · ✔ self-review"]:::pipe
     GT["[3] generating-tasks\nPLAN + Tasks section · ✔ self-review"]:::pipe
     RP["[4] reviewing-plan\nAI-as-judge · fresh-context · strong model\nemits verdict marker"]:::judge
@@ -28,7 +27,7 @@ flowchart TD
     CC["[6.5] crafting-commits\nclean history · ✔ self-review · human-gated"]:::pipe
     FDB(["[7] finishing-a-development-branch\nprint merge/PR commands"]):::sp
 
-    W --> FT --> PFT --> GT --> RP
+    ST --> PFT --> GT --> RP
     RP -->|PROCEED| GATE
     RP -.->|"DO NOT PROCEED — fix plan"| GT
     GATE -->|present| IT
@@ -105,8 +104,8 @@ Point it at your current branch. It dispatches parallel AI judges, filters the d
 # 1. Install the superpowers plugin (required dependency)
 /plugin install superpowers@claude-plugins-official
 
-# 2. Pull a ticket
-/fetching-tickets https://yoursite.atlassian.net/browse/PROJ-123
+# 2. Start the task (fetch ticket + set up branch)
+/start-task https://yoursite.atlassian.net/browse/PROJ-123
 
 # 3. Plan it
 /planning-from-ticket tickets/PROJ-123/PROJ-123.md
@@ -138,20 +137,22 @@ Each step is independently usable. Enter at any point if the upstream artifact a
 
 ## Skills Reference
 
-### `fetching-tickets`
+### `start-task`
 
-Pulls a Jira ticket to a local markdown file with all images downloaded.
+Fetches a Jira ticket (or reads a local file) and sets up a git branch — the single entry point for starting any new task.
 
 | | |
 |---|---|
-| **Input** | Jira ticket URL or key (`PROJ-123`) |
-| **Output** | `tickets/PROJ-123/PROJ-123.md` + `tickets/PROJ-123/images/` |
-| **Auto mode** | Supported, fetches without pausing |
-| **Requires** | `JIRA_EMAIL` and `JIRA_API_TOKEN` env vars |
+| **Input** | Jira ticket URL, Jira key (`PROJ-123`), or local file path |
+| **Output** | `tickets/PROJ-123/PROJ-123.md` + branch `{type}/PROJ-123/{slug}` |
+| **Flags** | `--worktree` — create a git worktree instead of a plain branch |
+| **Requires** | `JIRA_EMAIL` and `JIRA_API_TOKEN` env vars (for Jira inputs) |
 
 ```bash
-/fetching-tickets https://yoursite.atlassian.net/browse/PROJ-123
-/fetching-tickets PROJ-123
+/start-task https://yoursite.atlassian.net/browse/PROJ-123
+/start-task PROJ-123
+/start-task PROJ-123 --worktree
+/start-task ./tickets/PROJ-123/PROJ-123.md
 ```
 
 ---
@@ -290,7 +291,7 @@ Every pipeline skill accepts an optional `auto` argument. **Collaborative is the
 
 `auto` removes conversational pauses but does not remove safeguards. Git boundaries and judge halts are invariants in both modes.
 
-**`auto` does not chain skills.** Even in auto mode, each skill is a discrete command. `/fetching-tickets auto` fetches the ticket and stops. You decide when to invoke the next step.
+**`auto` does not chain skills.** Even in auto mode, each skill is a discrete command. `/start-task PROJ-123` fetches the ticket, sets up the branch, and stops. You decide when to invoke the next step.
 
 ## Composes with superpowers
 
@@ -334,7 +335,7 @@ Skills keep `model: inherit` (honoring your session model). Judge subagents are 
 
 | Step | Role | Recommended tier |
 |---|---|---|
-| `fetching-tickets`, `generating-tasks` | Mechanical / extraction | Any capable model |
+| `start-task`, `generating-tasks` | Mechanical / extraction | Any capable model |
 | `planning-from-ticket`, `crafting-commits` | Reasoning + writing | Default session model |
 | `implementing-tasks` | TDD cycle | Default session model |
 | `reviewing-plan` judge subagent | Subjective quality judgment | **Strong model** (e.g. `claude-opus-4-8`) |
