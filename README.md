@@ -17,6 +17,7 @@ flowchart TD
 
     ST(["① pick up ticket\nset up a branch\n/picking-up-task"]):::sp
     PFT["② read the codebase\nwrite an implementation plan\n/planning-from-ticket"]:::pipe
+    HG0{{"✋ you approve the plan\nor ask to revise it"}}:::gate
     GT["③ break the plan into\nsmall testable tasks\n/generating-tasks"]:::pipe
     HG1{{"✋ you approve the tasks\nor ask to revise them"}}:::gate
     RP{"④ AI reviews the plan\nbefore any code is written\n/reviewing-plan"}:::judge
@@ -28,7 +29,7 @@ flowchart TD
     HG3{{"✋ you approve the code\nor ask to fix it"}}:::gate
     CC(["⑦ clean up the commit history\nready to merge\n/crafting-commits"]):::sp
 
-    ST --> PFT --> GT --> HG1 --> RP
+    ST --> PFT --> HG0 --> GT --> HG1 --> RP
     RP -->|PROCEED| HG2
     RP -->|DO NOT PROCEED| RPR
     RPR --> RP
