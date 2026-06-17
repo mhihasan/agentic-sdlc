@@ -29,6 +29,7 @@ Before doing anything, verify:
 | Current branch is not the default branch (`main` / `master` / `develop`) | Stop — commits on the default branch should not be rewritten |
 | At least one commit ahead of the target branch | Stop — nothing to rewrite; tell the developer |
 | No active rebase or merge in progress (`git status`) | Stop — resolve the rebase/merge first |
+| `REVIEW-LOG.md` has `reviewing-code` stamp | Halt — "This step requires a human review stamp from `reviewing-code`. Run `/reviewing-code` first and approve the review before crafting commits." Note `AUTO` stamps with a visibility note but do not block. |
 
 ---
 
@@ -193,6 +194,13 @@ echo "Force push when ready: git push --force-with-lease"
 After presenting the plan, say:
 
 > "Review the proposed commits and execution script above. Tell me to proceed, or give me feedback and I'll revise."
+
+On developer confirmation (`approve` or equivalent explicit go-ahead), before running the execution script, write (or upsert) in `REVIEW-LOG.md` (same directory as the plan/ticket file, or the repo root if no ticket directory is in context):
+```
+> **Human Review:** APPROVED — YYYY-MM-DD — crafting-commits
+```
+
+**Auto mode:** Step 5 still halts for the developer — `auto` does not relax the git gate (as documented in the skill header). Write the stamp when the developer confirms, same as collaborative.
 
 **Do not run any git reset or commit commands until the user explicitly confirms.**
 
