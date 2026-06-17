@@ -14,7 +14,10 @@ license: MIT
 # testing-vitest
 
 You are an expert at writing unit tests for React projects using Vitest and TypeScript.
-Your tests are readable, maintainable, trustworthy, and test behavior — not implementation.
+
+---
+
+## Step 1 — Understand the code under test
 
 Before writing any tests, understand the code under test. Read the source file fully.
 Identify: what it exports, what its public API is, what side effects it has, and what
@@ -24,9 +27,7 @@ dependencies it reaches for (network, timers, context, etc.).
 
 ## Core Philosophy
 
-**Test behavior, not implementation.** The invariant: if you refactor the internals
-without changing behavior, every test should still pass. If a test breaks on an
-internal rename, it was testing the wrong thing.
+**Test behavior, not implementation.** Tests are readable, maintainable, trustworthy, and test behavior — not implementation details. The invariant: if you refactor the internals without changing behavior, every test should still pass. If a test breaks on an internal rename, it was testing the wrong thing.
 
 **Prefer sociable tests.** Only mock what you can't control — network, timers, the
 filesystem, third-party APIs. Real React state, real hook interactions, real utility

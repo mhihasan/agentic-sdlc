@@ -9,11 +9,11 @@ license: MIT
 
 # crafting-commits
 
-Analyzes changes on a feature branch, evaluates the semantic quality of existing commits, and produces a clean conventional-commit history that helps reviewers navigate a PR. Presents the plan in chat for human approval before touching anything.
+Analyzes changes on a feature branch, evaluates the semantic quality of existing commits, and produces a clean conventional-commit history that helps reviewers navigate a PR.
 
 **No auto-commit:** This skill proposes the rewritten history and prints the exact git commands. The developer reviews and runs all git operations — this skill never self-initiates `git commit`, `git reset`, `git push`, or `git merge`. The human-review gate in Step 5 is mandatory and cannot be skipped.
 
-**Modes:** Check the arguments for `auto`; **collaborative is the default.** In collaborative mode you produce the plan, present it in chat, and execute on confirmation (Step 6). In `auto` mode you produce and self-review the plan with no conversational pauses, then **stop at the execution boundary** — `auto` does **not** relax the git gate. Even in `auto`, the developer triggers every git command. `auto` only removes the chit-chat, never the Step 5 gate.
+**Modes:** Check the arguments for `auto`; **collaborative is the default.** In collaborative mode you produce the plan, present it in chat, and execute on confirmation (Step 6). In `auto` mode you produce and self-review the plan with no conversational pauses, then **stop at the execution boundary** — `auto` does **not** relax the git gate. Even in `auto`, the developer triggers every git command. `auto` only removes the chit-chat, never the Step 5 gate. In both modes, the plan is presented in chat for human approval before any git operations run.
 
 **`auto` invariants:** No self-commit (the bash script is presented, not executed). No self-push. Halt if the branch cannot be analyzed (e.g., merge conflicts). Ask on unresolvable ambiguity.
 

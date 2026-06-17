@@ -8,9 +8,9 @@ license: MIT
 
 # receiving-plan-review
 
-Work through `reviewing-plan` findings with technical rigor. Verify each finding before fixing it. Push back when findings are wrong.
+Work through `reviewing-plan` findings with technical rigor.
 
-**Core principle:** A finding is a claim, not an order. Verify it against the ticket and codebase before touching the plan.
+**Core principle:** A finding is a claim, not an order. Verify it against the ticket and codebase before touching the plan. Verify each finding before fixing it. Push back when findings are wrong.
 
 ## The Pattern
 
