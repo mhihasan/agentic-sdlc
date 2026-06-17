@@ -252,7 +252,7 @@ None
 ## Output Layout
 
 ```
-tickets/
+local-dev/tickets/
   TICKET-KEY/
     TICKET-KEY.md
     images/

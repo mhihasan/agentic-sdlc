@@ -31,7 +31,7 @@ Accepts one required argument. Detect the source type:
 |---|---|---|
 | Jira URL | `https://site.atlassian.net/browse/PROJ-42` | Extract key → invoke `fetching-tickets` skill |
 | Jira key | `PROJ-42` | Invoke `fetching-tickets` skill |
-| Local file | `./tickets/PROJ-42/PROJ-42.md` | Read file directly — no fetch |
+| Local file | `./local-dev/tickets/PROJ-42/PROJ-42.md` | Read file directly — no fetch |
 | Anything else | `"add password reset"` | **STOP — reject immediately** |
 
 **When input is unrecognized, say exactly this and do nothing else:**
@@ -50,11 +50,25 @@ When input is a Jira URL or key:
 
 **REQUIRED:** Invoke the `fetching-tickets` skill. Do not call Jira APIs directly (no MCP calls, no curl). `fetching-tickets` owns all Jira fetch logic — custom field discovery, image download, self-review. Do not re-implement it here.
 
-Once `fetching-tickets` completes, the ticket is at `tickets/PROJ-42/PROJ-42.md`.
+Once `fetching-tickets` completes, the ticket is at `local-dev/tickets/PROJ-42/PROJ-42.md`.
 
 ## Workspace Setup
 
 After the ticket is on disk (fetched or read from local file), set up the branch. This is **required** — do not skip it, do not hand off to `planning-from-ticket` before completing it.
+
+**One-time setup (first run only):** Ensure `local-dev/` is excluded from git globally so ticket and plan files are never accidentally committed to any project.
+
+Check whether `local-dev` is already in the global gitignore:
+```bash
+grep -q 'local-dev' "$(git config --global core.excludesfile 2>/dev/null || echo ~/.gitignore_global)" 2>/dev/null \
+  && echo "already excluded" \
+  || echo "local-dev/" >> "${$(git config --global core.excludesfile):-~/.gitignore_global}"
+```
+If the global excludes file does not exist yet, create it:
+```bash
+echo "local-dev/" >> ~/.gitignore_global
+git config --global core.excludesfile ~/.gitignore_global
+```
 
 ### 1. Detect base branch
 
@@ -134,9 +148,9 @@ Once the branch (or worktree) is ready, print exactly this and stop:
 
 ```
 Branch `feat/PROJ-42/add-user-auth` ready (based off `develop`).
-Ticket saved to `tickets/PROJ-42/PROJ-42.md`.
+Ticket saved to `local-dev/tickets/PROJ-42/PROJ-42.md`.
 
-Next: /planning-from-ticket tickets/PROJ-42/PROJ-42.md
+Next: /planning-from-ticket local-dev/tickets/PROJ-42/PROJ-42.md
 ```
 
 No push commands. No extra guidance. No reminders.

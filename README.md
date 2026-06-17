@@ -88,19 +88,19 @@ Point it at your current branch. It dispatches parallel AI judges, filters the d
 /picking-up-task https://yoursite.atlassian.net/browse/PROJ-123
 
 # 3. Plan it
-/planning-from-ticket tickets/PROJ-123/PROJ-123.md
+/planning-from-ticket local-dev/tickets/PROJ-123/PROJ-123.md
 
 # 4. Generate TDD tasks
-/generating-tasks tickets/PROJ-123/PLAN-PROJ-123.md
+/generating-tasks local-dev/tickets/PROJ-123/PLAN-PROJ-123.md
 
 # 5. Judge the plan (AI-as-judge, blocks implementation if findings are blockers)
-/reviewing-plan tickets/PROJ-123/PLAN-PROJ-123.md
+/reviewing-plan local-dev/tickets/PROJ-123/PLAN-PROJ-123.md
 
 # 6. Implement (refuses to start without a PROCEED verdict marker)
-/implementing-tasks tickets/PROJ-123/PLAN-PROJ-123.md auto
+/implementing-tasks local-dev/tickets/PROJ-123/PLAN-PROJ-123.md auto
 
 # 7. Review the code
-/reviewing-code branch tickets/PROJ-123/PLAN-PROJ-123.md
+/reviewing-code branch local-dev/tickets/PROJ-123/PLAN-PROJ-123.md
 
 # 8. Address findings (if any)
 # superpowers:receiving-code-review  — verify each finding, push back on wrong ones, fix genuine ones
@@ -122,7 +122,7 @@ Fetches a Jira ticket (or reads a local file) and sets up a git branch — the s
 | | |
 |---|---|
 | **Input** | Jira ticket URL, Jira key (`PROJ-123`), or local file path |
-| **Output** | `tickets/PROJ-123/PROJ-123.md` + branch `{type}/PROJ-123/{slug}` |
+| **Output** | `local-dev/tickets/PROJ-123/PROJ-123.md` + branch `{type}/PROJ-123/{slug}` |
 | **Flags** | `--worktree` — create a git worktree instead of a plain branch |
 | **Requires** | `JIRA_EMAIL` and `JIRA_API_TOKEN` env vars (for Jira inputs) |
 
@@ -130,7 +130,7 @@ Fetches a Jira ticket (or reads a local file) and sets up a git branch — the s
 /picking-up-task https://yoursite.atlassian.net/browse/PROJ-123
 /picking-up-task PROJ-123
 /picking-up-task PROJ-123 --worktree
-/picking-up-task ./tickets/PROJ-123/PROJ-123.md
+/picking-up-task ./local-dev/tickets/PROJ-123/PROJ-123.md
 ```
 
 ---
@@ -141,13 +141,13 @@ Turns a local ticket file into a structured implementation plan. Explores the co
 
 | | |
 |---|---|
-| **Input** | Local ticket file (`tickets/PROJ-123/PROJ-123.md`) |
-| **Output** | `tickets/PROJ-123/PLAN-PROJ-123.md` |
+| **Input** | Local ticket file (`local-dev/tickets/PROJ-123/PROJ-123.md`) |
+| **Output** | `local-dev/tickets/PROJ-123/PLAN-PROJ-123.md` |
 | **Auto mode** | Supported, picks recommended option and skips chat presentation |
 
 ```bash
-/planning-from-ticket tickets/PROJ-123/PROJ-123.md
-/planning-from-ticket tickets/PROJ-123/PROJ-123.md auto
+/planning-from-ticket local-dev/tickets/PROJ-123/PROJ-123.md
+/planning-from-ticket local-dev/tickets/PROJ-123/PROJ-123.md auto
 ```
 
 ---
@@ -158,13 +158,13 @@ Appends TDD-ready task specs into an existing plan file. Each task includes a te
 
 | | |
 |---|---|
-| **Input** | Plan file (`tickets/PROJ-123/PLAN-PROJ-123.md`) |
+| **Input** | Plan file (`local-dev/tickets/PROJ-123/PLAN-PROJ-123.md`) |
 | **Output** | `# Tasks` section appended to the same plan file |
 | **Auto mode** | Supported, drafts and appends without pausing |
 
 ```bash
-/generating-tasks tickets/PROJ-123/PLAN-PROJ-123.md
-/generating-tasks tickets/PROJ-123/PLAN-PROJ-123.md auto
+/generating-tasks local-dev/tickets/PROJ-123/PLAN-PROJ-123.md
+/generating-tasks local-dev/tickets/PROJ-123/PLAN-PROJ-123.md auto
 ```
 
 ---
@@ -181,7 +181,7 @@ AI-as-judge that evaluates the plan + tasks against the ticket before any code i
 | **Verdict** | `PROCEED` / `PROCEED WITH CHANGES` / `DO NOT PROCEED` |
 
 ```bash
-/reviewing-plan tickets/PROJ-123/PLAN-PROJ-123.md
+/reviewing-plan local-dev/tickets/PROJ-123/PLAN-PROJ-123.md
 ```
 
 `implementing-tasks` refuses to start without a PROCEED marker in the plan file.
@@ -225,8 +225,8 @@ Implements a task spec via TDD. Auto-selects `testing-pytest` (Python) or `testi
 | **Requires** | PROCEED verdict marker in plan file |
 
 ```bash
-/implementing-tasks tickets/PROJ-123/PLAN-PROJ-123.md        # collaborative, pauses for approval
-/implementing-tasks tickets/PROJ-123/PLAN-PROJ-123.md auto   # auto, no forward-progress pauses
+/implementing-tasks local-dev/tickets/PROJ-123/PLAN-PROJ-123.md        # collaborative, pauses for approval
+/implementing-tasks local-dev/tickets/PROJ-123/PLAN-PROJ-123.md auto   # auto, no forward-progress pauses
 ```
 
 Never self-commits or pushes. Code is left staged/unstaged for you to review.
@@ -247,7 +247,7 @@ Triage-first code review. Dispatches parallel AI judges filtered by domain (Type
 ```bash
 /reviewing-code branch                                             # review current branch against main
 /reviewing-code PR-456                                             # review a specific PR
-/reviewing-code branch tickets/PROJ-123/PLAN-PROJ-123.md          # pipeline mode with plan context
+/reviewing-code branch local-dev/tickets/PROJ-123/PLAN-PROJ-123.md          # pipeline mode with plan context
 ```
 
 **If the verdict is FAIL (collaborative mode):**
