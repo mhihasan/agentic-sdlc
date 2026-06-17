@@ -155,8 +155,8 @@ When the developer says findings are addressed: load the original report, build 
 
 Once the verdict is PASS (or PASS WITH FINDINGS the developer accepts):
 
-1. **Run `crafting-commits`** — this is a **mandatory pipeline step**, not optional. A clean conventional-commit history is required before `finishing-a-development-branch`. `crafting-commits` proposes the rewritten history and prints the exact git commands; the developer reviews and runs them. Mandatory to invoke; human-gated to execute.
-2. Then `finishing-a-development-branch` may be used **only** to present merge/PR/keep/discard options, print the exact git commands, and clean up a worktree. It must not commit, push, merge, or open a PR on its own initiative — the developer runs all git writes.
+1. **Run `crafting-commits`** — this is a **mandatory pipeline step**, not optional. A clean conventional-commit history is required before `superpowers:finishing-a-development-branch`. `crafting-commits` proposes the rewritten history and prints the exact git commands; the developer reviews and runs them. Mandatory to invoke; human-gated to execute.
+2. Then `superpowers:finishing-a-development-branch` may be used **only** to present merge/PR/keep/discard options, print the exact git commands, and clean up a worktree. It must not commit, push, merge, or open a PR on its own initiative — the developer runs all git writes.
 
 ## Modes
 

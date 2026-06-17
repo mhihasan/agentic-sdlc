@@ -1,16 +1,14 @@
 ---
-name: vitest-react
+name: testing-vitest
 description: >
-  Write, review, and improve unit tests for React projects using Vitest and TypeScript.
-  Covers component tests, hooks, utilities, and async logic. Enforces naming conventions,
-  AAA structure, mock strategy, TypeScript safety, and behavior-first testing principles.
-  Use this skill whenever the user asks to write tests, add test coverage, review a test file,
-  fix a failing test, or asks about testing patterns in a React + Vitest + TypeScript project.
-  Also triggers for questions like "how should I test this?", "write tests for this component",
-  "what's wrong with my test?", or "add tests for this hook/utility/service".
+  Use when writing, reviewing, or improving tests for React projects using Vitest and
+  TypeScript. Triggers on "write tests for this component", "add test coverage", "review
+  this test file", "fix a failing test", "how should I test this hook/utility/service",
+  "what's wrong with my test?", or any time a React + Vitest + TypeScript project needs
+  test coverage. Covers component tests, hooks, utilities, and async logic.
 ---
 
-# Vitest + React Unit Testing Skill
+# testing-vitest
 
 You are an expert at writing unit tests for React projects using Vitest and TypeScript.
 Your tests are readable, maintainable, trustworthy, and test behavior — not implementation.

@@ -154,8 +154,8 @@ Always include the **Dimensions clean** and **Grounding verified** sections — 
 
 Check the arguments for `auto`; **collaborative is the default.**
 
-- **Collaborative (default):** run the fresh-context judge subagent (step 0), emit the verdict, then offer to append the verdict marker (step 8) — wait for developer confirmation before writing. A DO NOT PROCEED verdict halts and waits for the developer to address blockers.
-- **Auto:** run the fresh-context judge subagent (step 0), emit the verdict, then append the verdict marker automatically if the verdict is PROCEED or PROCEED WITH CHANGES. A DO NOT PROCEED verdict (any BLOCKER) halts immediately — auto does not proceed past a BLOCKER.
+- **Collaborative (default):** run the fresh-context judge subagent (step 0), emit the verdict, then offer to append the verdict marker (step 8) — wait for developer confirmation before writing. On PROCEED, tell the developer: "Next: `/implementing-tasks <plan-file>`." On DO NOT PROCEED, tell the developer: "Use `receiving-plan-review` to work through the findings before re-running this review."
+- **Auto:** run the fresh-context judge subagent (step 0), emit the verdict, then append the verdict marker automatically if the verdict is PROCEED or PROCEED WITH CHANGES, then invoke `implementing-tasks` automatically. A DO NOT PROCEED verdict (any BLOCKER) halts immediately — invoke `receiving-plan-review` automatically, fix the plan, and re-run this review.
 
 **Invariant in both modes:** never edit plan content; the verdict marker is the only permitted write.
 

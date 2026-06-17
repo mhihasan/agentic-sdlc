@@ -4,39 +4,71 @@
 
 > *Review early, review often.* A flaw surfaced before coding costs nothing. The same flaw surfaced after five tasks can invalidate all five.
 
-Works with Claude Code, OpenCode, Cursor, and any tool that reads `~/.claude/skills/`.
+Works with Claude Code, OpenCode, Cursor, and GitHub Copilot.
+
+## Agentic Coding Workflow
+
+Ticket in, reviewed code out.
+
+```mermaid
+flowchart TD
+    classDef pipe fill:#dbeafe,stroke:#3b82f6,color:#1e3a5f
+    classDef judge fill:#fef3c7,stroke:#d97706,color:#78350f
+    classDef sp fill:#dcfce7,stroke:#16a34a,color:#14532d
+
+    ST(["picking-up-task\nJira URL / key / local file  →  branch + ticket file"]):::sp
+    PFT["planning-from-ticket\nticket file  →  PLAN-KEY.md"]:::pipe
+    GT["generating-tasks\nPLAN-KEY.md  →  Tasks section appended"]:::pipe
+    RP{"reviewing-plan\nAI-as-judge · fresh context · strong model"}:::judge
+    RPR["receiving-plan-review\nverify findings · fix plan"]:::pipe
+    IT["implementing-tasks\nTDD · auto-selects pytest or vitest\nrequires PROCEED marker · mid-task self-review"]:::pipe
+    RC{"reviewing-code\nAI-as-judge · fresh context · strong model"}:::judge
+    RCR["superpowers:receiving-code-review\nverify findings · fix code"]:::sp
+    CC(["crafting-commits\nconventional commits · human-gated"]):::sp
+
+    ST --> PFT --> GT --> RP
+    RP -->|PROCEED| IT
+    RP -->|DO NOT PROCEED| RPR
+    RPR --> RP
+    IT --> RC
+    RC -->|PASS| CC
+    RC -->|FAIL| RCR
+    RCR --> RC
+```
+
 
 ## Use cases
 
-**Agentic workflow**
-- Pull a Jira ticket, plan it, generate TDD tasks, implement, review, and open a PR without leaving the agent
-- Enter the pipeline at any step. If you already have a plan file, skip straight to implementation
+**Full pipeline** — ticket in, reviewed code out. Enter at any step if the upstream artifact already exists.
 
-**Code review**
-- Review a branch before opening a PR: parallel AI judges, domain-filtered diff, triage-first report with BLOCKER/SHOULD-FIX/NIT severity
-- Review any existing PR or diff without needing a plan file
+**Standalone review** — review any branch or PR without a plan file: domain-filtered diff, triage-first report with BLOCKER / SHOULD-FIX / NIT severity.
 
-**Planning & design**
-- Turn a ticket or spec into a structured implementation plan with scope, risks, and breaking changes surfaced upfront
-- Block implementation until the plan passes an AI-as-judge gate. Never implement a flawed design
-- Generate an architecture design doc from an existing codebase
+**Architecture docs** — generate a production-grade design document from an existing codebase.
 
-**Implementation**
-- Execute TDD tasks one by one. Auto-selects pytest or Vitest, enforces the TDD Iron Law (no code before a failing test)
-- Dispatch parallel agents on multi-failure test runs instead of fixing one failure at a time
+**Craft coaching** — book-grounded skills for architecture review (Clean Architecture), DDD modeling, system design Q&A (DDIA), and code quality critique (Clean Code, Pragmatic Programmer).
 
-**Craft coaching**
-- Architecture review: Dependency Rule violations, boundary placement, Clean Architecture compliance
-- DDD modeling: identify Aggregates, Bounded Contexts, and Ubiquitous Language gaps in a codebase
-- System design Q&A grounded in DDIA, covering replication, sharding, consistency, stream processing
-- Code quality critique using Clean Code and Pragmatic Programmer lens on functions, naming, error handling
+## Installation
 
-**Commit hygiene**
-- Rewrite a messy branch history into clean conventional commits, human-gated before anything is pushed
+```bash
+git clone git@github.com:mhihasan/coding-agent-skills.git
+cd coding-agent-skills
+
+# User scope — available in all projects
+./install.sh --scope=user --tool=claude     # → ~/.claude/skills/   (Claude Code, OpenCode, Cursor)
+./install.sh --scope=user --tool=copilot    # → ~/.copilot/skills/  (GitHub Copilot)
+./install.sh --scope=user --tool=all        # → both
+
+# Project scope — current project only
+./install.sh --scope=project --tool=claude  /path/to/project   # → .claude/skills/
+./install.sh --scope=project --tool=copilot /path/to/project   # → .github/skills/
+./install.sh --scope=project --tool=all     /path/to/project   # → both
+```
+
+Safe to re-run: existing symlinks are updated, real directories are never overwritten.
 
 ## Quickstart
 
-**Option A: review any branch right now (zero setup)**
+**Option A: review any branch right now**
 
 ```
 /reviewing-code branch
@@ -49,13 +81,11 @@ Point it at your current branch. It dispatches parallel AI judges, filters the d
 **Option B: full pipeline from a Jira ticket**
 
 ```bash
-# 1. Install dependencies
-/plugin install superpowers@claude-plugins-official       # in Claude Code
-/plugin marketplace add mhihasan/coding-agent-skills      # in Claude Code
-/plugin install coding-agent-skills@coding-agent-skills   # in Claude Code
+# 1. Install the superpowers plugin (required dependency)
+/plugin install superpowers@claude-plugins-official
 
-# 2. Pull a ticket
-/fetching-tickets https://yoursite.atlassian.net/browse/PROJ-123
+# 2. Start the task (fetch ticket + set up branch)
+/picking-up-task https://yoursite.atlassian.net/browse/PROJ-123
 
 # 3. Plan it
 /planning-from-ticket tickets/PROJ-123/PROJ-123.md
@@ -70,30 +100,37 @@ Point it at your current branch. It dispatches parallel AI judges, filters the d
 /implementing-tasks tickets/PROJ-123/PLAN-PROJ-123.md auto
 
 # 7. Review the code
-/reviewing-code branch
+/reviewing-code branch tickets/PROJ-123/PLAN-PROJ-123.md
 
-# 8. Clean up commits
+# 8. Address findings (if any)
+# superpowers:receiving-code-review  — verify each finding, push back on wrong ones, fix genuine ones
+# then re-run /reviewing-code to confirm all findings resolved
+
+# 9. Clean up commits
 /crafting-commits
+# presents plan in chat → confirm → executes
 ```
 
 Each step is independently usable. Enter at any point if the upstream artifact already exists.
 
 ## Skills Reference
 
-### `fetching-tickets`
+### `picking-up-task`
 
-Pulls a Jira ticket to a local markdown file with all images downloaded.
+Fetches a Jira ticket (or reads a local file) and sets up a git branch — the single entry point for starting any new task.
 
 | | |
 |---|---|
-| **Input** | Jira ticket URL or key (`PROJ-123`) |
-| **Output** | `tickets/PROJ-123/PROJ-123.md` + `tickets/PROJ-123/images/` |
-| **Auto mode** | Supported, fetches without pausing |
-| **Requires** | `JIRA_EMAIL` and `JIRA_API_TOKEN` env vars |
+| **Input** | Jira ticket URL, Jira key (`PROJ-123`), or local file path |
+| **Output** | `tickets/PROJ-123/PROJ-123.md` + branch `{type}/PROJ-123/{slug}` |
+| **Flags** | `--worktree` — create a git worktree instead of a plain branch |
+| **Requires** | `JIRA_EMAIL` and `JIRA_API_TOKEN` env vars (for Jira inputs) |
 
 ```bash
-/fetching-tickets https://yoursite.atlassian.net/browse/PROJ-123
-/fetching-tickets PROJ-123
+/picking-up-task https://yoursite.atlassian.net/browse/PROJ-123
+/picking-up-task PROJ-123
+/picking-up-task PROJ-123 --worktree
+/picking-up-task ./tickets/PROJ-123/PROJ-123.md
 ```
 
 ---
@@ -140,7 +177,7 @@ AI-as-judge that evaluates the plan + tasks against the ticket before any code i
 |---|---|
 | **Input** | Plan file with tasks (reads the ticket file alongside it automatically) |
 | **Output** | Verdict report with BLOCKER/SHOULD-FIX/NIT findings; appends `> **Plan Review:** PROCEED — YYYY-MM-DD` marker to the plan on pass |
-| **Auto mode** | Supported, appends verdict marker automatically; halts on DO NOT PROCEED regardless |
+| **Auto mode** | Supported, appends verdict marker automatically; on DO NOT PROCEED automatically invokes `receiving-plan-review`, fixes the plan, and re-runs review |
 | **Verdict** | `PROCEED` / `PROCEED WITH CHANGES` / `DO NOT PROCEED` |
 
 ```bash
@@ -149,11 +186,36 @@ AI-as-judge that evaluates the plan + tasks against the ticket before any code i
 
 `implementing-tasks` refuses to start without a PROCEED marker in the plan file.
 
+**If the verdict is DO NOT PROCEED (collaborative mode):**
+
+1. Use `receiving-plan-review` to work through the findings:
+   - Verify each finding against the ticket ACs and codebase before accepting it
+   - Push back with evidence if a finding is wrong
+   - Fix only findings that hold up under scrutiny
+2. Re-run `/reviewing-plan` — fresh verdict against the updated plan
+3. Once verdict is PROCEED, continue to `implementing-tasks`
+
+---
+
+### `receiving-plan-review`
+
+Works through `reviewing-plan` findings with technical rigor. Verifies each finding against the ticket and codebase before accepting it — pushes back on wrong findings, fixes genuine ones.
+
+| | |
+|---|---|
+| **Input** | Plan review findings (from `reviewing-plan` output) + ticket file + plan file |
+| **Output** | Per-finding verdict (accept / push back) with targeted plan edits; prompt to re-run `reviewing-plan` |
+
+```bash
+# Invoke after a DO NOT PROCEED or PROCEED WITH CHANGES verdict
+receiving-plan-review
+```
+
 ---
 
 ### `implementing-tasks`
 
-Implements a task spec via TDD. Auto-selects `pytest-expert` (Python) or `vitest-react` (React) and enforces RED → GREEN → REFACTOR per test.
+Implements a task spec via TDD. Auto-selects `testing-pytest` (Python) or `testing-vitest` (React) and enforces RED → GREEN → REFACTOR per test.
 
 | | |
 |---|---|
@@ -179,7 +241,7 @@ Triage-first code review. Dispatches parallel AI judges filtered by domain (Type
 |---|---|
 | **Input** | Branch name, PR number, staged diff, or diff file; optionally a plan/spec file for pipeline context (ticket file read automatically if found beside the plan) |
 | **Output** | `CODE-REVIEW-{identifier}.md` with severity-tiered findings (🔴 Critical → ⚠️ Manual) |
-| **Auto mode** | Supported, skips triage confirmation and proceeds directly to review |
+| **Auto mode** | Supported, skips triage confirmation and proceeds directly to review; on FAIL automatically invokes `superpowers:receiving-code-review`, fixes findings, and re-runs review |
 | **Verdict** | Pipeline: `PASS` / `PASS WITH FINDINGS` / `FAIL` · General: `APPROVE` / `APPROVE WITH COMMENTS` / `REQUEST CHANGES` |
 
 ```bash
@@ -188,16 +250,25 @@ Triage-first code review. Dispatches parallel AI judges filtered by domain (Type
 /reviewing-code branch tickets/PROJ-123/PLAN-PROJ-123.md          # pipeline mode with plan context
 ```
 
+**If the verdict is FAIL (collaborative mode):**
+
+1. Use `superpowers:receiving-code-review` to work through the findings:
+   - Verify each finding against the actual code before accepting it
+   - Push back with technical reasoning if a finding is wrong
+   - Fix only findings that hold up under scrutiny
+2. Re-run `/reviewing-code` — it produces a delta report against the original, not a full re-review
+3. Once verdict is PASS, continue to `crafting-commits`
+
 ---
 
 ### `crafting-commits`
 
-Rewrites a messy branch history into clean conventional commits. Produces a human-readable plan and never runs git commands without your approval.
+Rewrites a messy branch history into clean conventional commits. Presents the plan in chat for approval, never runs git commands without your confirmation, then reminds you to run `superpowers:finishing-a-development-branch`.
 
 | | |
 |---|---|
 | **Input** | Current git branch (reads history automatically) |
-| **Output** | `tickets/<TICKET>/commit-plan-<TICKET>.md` if the ticket directory exists, otherwise `local-dev/plans/commit-plan-<TICKET>.md`; contains proposed commit sequence and a ready-to-run bash script |
+| **Output** | Commit plan presented in chat with proposed sequence and ready-to-run bash script |
 | **Auto mode** | Supported, produces plan without pausing; always halts before executing any git commands |
 
 ```bash
@@ -205,7 +276,7 @@ Rewrites a messy branch history into clean conventional commits. Produces a huma
 /crafting-commits auto
 ```
 
-Review the plan, then run the generated script yourself.
+Review the plan in chat, confirm, and the script runs. Reminds you to run `superpowers:finishing-a-development-branch` when ready.
 
 ---
 
@@ -223,41 +294,7 @@ Every pipeline skill accepts an optional `auto` argument. **Collaborative is the
 
 `auto` removes conversational pauses but does not remove safeguards. Git boundaries and judge halts are invariants in both modes.
 
-**`auto` does not chain skills.** Even in auto mode, each skill is a discrete command. `/fetching-tickets auto` fetches the ticket and stops. You decide when to invoke the next step.
-
-## Agentic Coding Workflow
-
-These skills chain into a single feature-development pipeline: ticket in, reviewed code out.
-
-```mermaid
-flowchart TD
-    classDef pipe fill:#dbeafe,stroke:#3b82f6,color:#1e3a5f
-    classDef judge fill:#fef3c7,stroke:#d97706,color:#78350f
-    classDef sp fill:#dcfce7,stroke:#16a34a,color:#14532d
-    classDef gate fill:#fee2e2,stroke:#dc2626,color:#7f1d1d
-
-    W(["[0] using-git-worktrees\nisolate workspace"]):::sp
-    FT["[1] fetching-tickets\nJira → TICKET-KEY.md · ✔ self-review"]:::pipe
-    PFT["[2] planning-from-ticket\nticket → PLAN-KEY.md · ✔ self-review"]:::pipe
-    GT["[3] generating-tasks\nPLAN + Tasks section · ✔ self-review"]:::pipe
-    RP["[4] reviewing-plan\nAI-as-judge · fresh-context · strong model\nemits verdict marker"]:::judge
-    GATE{"verdict marker\nin PLAN file?"}:::gate
-    IT["[5] implementing-tasks\nTDD · pytest-expert / vitest-react\n↺ mid-task review gate"]:::pipe
-    RC["[6] reviewing-code\nAI-as-judge · fresh-context · strong model"]:::judge
-    CC["[6.5] crafting-commits\nclean history · ✔ self-review · human-gated"]:::pipe
-    FDB(["[7] finishing-a-development-branch\nprint merge/PR commands"]):::sp
-
-    W --> FT --> PFT --> GT --> RP
-    RP -->|PROCEED| GATE
-    RP -.->|"DO NOT PROCEED — fix plan"| GT
-    GATE -->|present| IT
-    GATE -.->|"missing — halt"| RP
-    IT --> RC
-    RC -->|PASS| CC --> FDB
-    RC -.->|"FAIL — fix code"| IT
-```
-
-> 🔵 pipeline steps · 🟡 AI-as-judge · 🟢 superpowers steps · dotted = fix & retry
+**`auto` does not chain skills.** Even in auto mode, each skill is a discrete command. `/picking-up-task PROJ-123` fetches the ticket, sets up the branch, and stops. You decide when to invoke the next step.
 
 ## Composes with superpowers
 
@@ -292,8 +329,9 @@ Self-review is cheap and always runs. AI-as-judge is expensive and targeted. The
 |---|---|
 | [2] `planning-from-ticket` | REQUIRED: `superpowers:brainstorming` · ADOPT: `superpowers:writing-plans` rigor |
 | [3] `generating-tasks` | ADOPT: `superpowers:writing-plans` bite-sized-task discipline |
-| [5] `implementing-tasks` | REQUIRED: `superpowers:test-driven-development` + `pytest-expert` / `vitest-react` · `superpowers:systematic-debugging` on wrong-reason RED · `superpowers:dispatching-parallel-agents` on multi-failures · `superpowers:verification-before-completion` before marking done · `superpowers:requesting-code-review` mid-task |
-| [6] `reviewing-code` | ADOPT: `superpowers:requesting-code-review` (SHA convention) · `superpowers:receiving-code-review` (verify-before-fix) |
+| [4] `reviewing-plan` | ON DO NOT PROCEED: `receiving-plan-review` (verify-before-fix) |
+| [5] `implementing-tasks` | REQUIRED: `superpowers:test-driven-development` + `testing-pytest` / `testing-vitest` · `superpowers:systematic-debugging` on wrong-reason RED · `superpowers:dispatching-parallel-agents` on multi-failures · `superpowers:verification-before-completion` before marking done · `superpowers:requesting-code-review` mid-task |
+| [6] `reviewing-code` | ON FAIL: `superpowers:receiving-code-review` (verify-before-fix) · ADOPT: `superpowers:requesting-code-review` (SHA convention) |
 
 ### Recommended model tiers
 
@@ -301,15 +339,17 @@ Skills keep `model: inherit` (honoring your session model). Judge subagents are 
 
 | Step | Role | Recommended tier |
 |---|---|---|
-| `fetching-tickets`, `generating-tasks` | Mechanical / extraction | Any capable model |
+| `picking-up-task`, `generating-tasks` | Mechanical / extraction | Any capable model |
 | `planning-from-ticket`, `crafting-commits` | Reasoning + writing | Default session model |
 | `implementing-tasks` | TDD cycle | Default session model |
 | `reviewing-plan` judge subagent | Subjective quality judgment | **Strong model** (e.g. `claude-opus-4-8`) |
 | `reviewing-code` check subagents | Subjective quality judgment | **Strong model** (e.g. `claude-opus-4-8`) |
 
-## Craft Skills
+## Book Skills
 
-Standalone, book-grounded skills usable on their own or within the workflow above.
+Standalone coaching skills in `book-skills/`. Each is grounded in a specific book and usable independently — invoke them for architecture review, DDD coaching, design critique, and system design Q&A.
+
+Install manually by symlinking from `book-skills/` into `~/.claude/skills/`.
 
 | Skill | Grounded in |
 |---|---|
@@ -317,27 +357,5 @@ Standalone, book-grounded skills usable on their own or within the workflow abov
 | `clean-coding` | Robert C. Martin, *Clean Code* (2008) |
 | `ddd-expert` | Eric Evans, *Domain-Driven Design* (2003) |
 | `design-patterns-expert` | Alexander Shvets, *Dive Into Design Patterns* (2022) |
-| `design-doc-generator` | Generates production-grade architecture docs from a codebase |
 | `pragmatic-engineer` | Thomas & Hunt, *The Pragmatic Programmer* (2019) |
 | `system-designing` | Kleppmann & Riccomini, *Designing Data-Intensive Applications* (2nd ed.) |
-| `pytest-expert` | Opinionated pytest best practices for Python |
-| `vitest-react` | Unit testing for React + Vitest + TypeScript projects |
-
-## Installation
-
-**Option A: Claude Code plugin (recommended)**
-
-```shell
-/plugin marketplace add mhihasan/coding-agent-skills
-/plugin install coding-agent-skills@coding-agent-skills
-```
-
-**Option B: manual symlink (OpenCode, Cursor, any tool reading `~/.claude/skills/`)**
-
-```bash
-git clone git@github.com:mhihasan/coding-agent-skills.git
-cd coding-agent-skills
-./install.sh
-```
-
-`install.sh` symlinks all skills into `~/.claude/skills/`. Safe to re-run: existing symlinks are updated, real directories are never overwritten.

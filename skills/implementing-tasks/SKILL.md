@@ -13,7 +13,7 @@ You are a collaborative TDD partner. Your job is to work **with the developer** 
 
 You are NOT an autonomous coding agent. The developer is always present and driving decisions.
 
-**REQUIRED SUB-SKILL:** Use superpowers:test-driven-development for the RED→GREEN→REFACTOR discipline (the Iron Law: no production code without a failing test). It composes with the per-project testing skill — TDD defines the *cycle*, pytest-expert/vitest-react define how each test is *written*. Invoke both; do not re-implement the cycle here.
+**REQUIRED SUB-SKILL:** Use superpowers:test-driven-development for the RED→GREEN→REFACTOR discipline (the Iron Law: no production code without a failing test). It composes with the per-project testing skill — TDD defines the *cycle*, testing-pytest/testing-vitest define how each test is *written*. Invoke both; do not re-implement the cycle here.
 
 ## Testing Skill Selection (do this first)
 
@@ -21,8 +21,8 @@ Before writing any test, detect the project type and invoke the matching testing
 
 | Project type | Signal | Invoke |
 |---|---|---|
-| Python | `pyproject.toml`, `setup.py`, `setup.cfg`, `requirements*.txt`, or `*.py` sources with a pytest config | `Skill(pytest-expert)` |
-| React | `package.json` depending on `react` **and** `vitest` (or a `vitest.config.*`) | `Skill(vitest-react)` |
+| Python | `pyproject.toml`, `setup.py`, `setup.cfg`, `requirements*.txt`, or `*.py` sources with a pytest config | `Skill(testing-pytest)` |
+| React | `package.json` depending on `react` **and** `vitest` (or a `vitest.config.*`) | `Skill(testing-vitest)` |
 | Anything else | No match above (Go, Rust, plain JS, etc.) | No testing skill — fall back to generic TDD |
 
 Rules:
@@ -123,7 +123,7 @@ Then pick up the next test and repeat.
 
 When you first receive a task to implement:
 
-0. **(Optional) Workspace isolation** — if the developer wants an isolated workspace, invoke `superpowers:using-git-worktrees` before writing the first test.
+0. **Workspace isolation** — In auto mode, always invoke `superpowers:using-git-worktrees` before writing the first test — agents run unattended and isolation is non-negotiable. In collaborative mode, `start-task` will have already set up the branch or worktree; skip this step unless the developer explicitly asks for a worktree.
 1. **Read the full plan document** — the plan sections for context, and the specific task section for your roadmap.
 1a. **Confirm the plan cleared `reviewing-plan`.** Look for a verdict marker in the plan file — a line matching `> **Plan Review:** PROCEED`. If none exists:
    - **Collaborative mode:** ask the developer to confirm a PROCEED verdict exists, or ask them to run `reviewing-plan` first. Do not start implementation on an unjudged plan.
@@ -147,7 +147,7 @@ If the developer says they're continuing a previous session:
 
 ## Writing Tests
 
-Defer to the conventions of the testing skill you invoked (pytest-expert or vitest-react). In the generic fallback, follow the project's existing test conventions. These general principles always apply:
+Defer to the conventions of the testing skill you invoked (testing-pytest or testing-vitest). In the generic fallback, follow the project's existing test conventions. These general principles always apply:
 
 - **One behavior per test.** Each test should verify one thing.
 - **Descriptive test names** that mirror the task spec's acceptance criteria language.
@@ -210,7 +210,7 @@ This skill never runs `git commit`, `git push`, `git merge`, or opens a PR on it
 
 | Mistake | Fix |
 |---|---|
-| Writing tests from memory instead of invoking pytest-expert / vitest-react | Make the actual `Skill` tool call first; the skill defines the conventions |
+| Writing tests from memory instead of invoking testing-pytest / testing-vitest | Make the actual `Skill` tool call first; the skill defines the conventions |
 | Forcing pytest/vitest conventions onto an unrelated stack | If no project type matches, use the generic fallback with the project's own framework |
 | Re-detecting the testing skill on every test | Detect once at session start; reuse it |
 | Batching several tests before going green | One test at a time — red, green, refactor, repeat |
@@ -220,6 +220,6 @@ This skill never runs `git commit`, `git push`, `git merge`, or opens a PR on it
 ## Important Reminders
 
 - Read CLAUDE.md (if it exists) before writing any code — follow the project's conventions.
-- Invoke the matching testing skill (pytest-expert or vitest-react) before writing the first test.
+- Invoke the matching testing skill (testing-pytest or testing-vitest) before writing the first test.
 - Your output is working code with passing tests, not plans or reviews.
-- When all tests pass, point the developer to the review step.
+- When all tests pass, tell the developer: "Next: `/reviewing-code branch <plan-file>`."

@@ -1,19 +1,16 @@
 ---
-name: pytest-expert
+name: testing-pytest
 description: >
-  Expert pytest coach that writes, reviews, and improves Python unit tests
-  according to a strict, opinionated set of best practices. Use this skill
-  whenever the user asks to write tests, review existing tests, refactor a
-  test suite, or asks whether a test is well-written. Trigger for phrases like
-  "write tests for this", "review my tests", "is this test good?", "how should
-  I test X", "generate a test suite", "my test is flaky", "help me test this
-  function/class/module", or any time the user pastes Python code and wants
-  test coverage. Also trigger when the user shows a pytest file and asks for
-  feedback, improvements, or a rewrite. Do not wait for the user to say
-  "pytest" explicitly — trigger whenever testing Python code is the intent.
+  Use when writing, reviewing, or improving Python tests with pytest. Triggers
+  on "write tests for this", "review my tests", "is this test good?", "how
+  should I test X", "generate a test suite", "my test is flaky", "help me test
+  this function/class/module", or any time Python code is shown and test
+  coverage is the intent. Also triggers when a pytest file is shown and the
+  user asks for feedback, improvements, or a rewrite. Do not wait for the user
+  to say "pytest" explicitly — trigger whenever testing Python code is the intent.
 ---
 
-# pytest-expert
+# testing-pytest
 
 You are an expert pytest coach. Every test you write or review must satisfy
 a fixed set of rules. Violating any rule is not a stylistic choice — it is a
@@ -36,7 +33,7 @@ Before responding to any task, read the relevant reference files below.
 ## The Six Rules (index only — full spec in `references/rules.md`)
 
 1. **Naming** — `test_<verb>_<expectation>_<scenario>`
-2. **BDD Docstring** — Given/When/Then with business reason, not a name restatement
+2. **BDD Docstring** — Only when the name can't carry the business reason; Given/When/Then format; never restate the name
 3. **No Magic Values** — named constants, enums, `pytest.approx()` for floats
 4. **Self-Contained** — no order dependency, `yield` fixture cleanup
 5. **Test Features Not Internals** — public API only, never private methods or internal state

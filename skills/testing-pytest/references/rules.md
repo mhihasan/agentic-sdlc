@@ -36,12 +36,10 @@ scenario segment may be omitted. When in doubt, include it.
 
 ## Rule 2 — BDD Docstring
 
-Every test function needs a docstring in Given/When/Then format. Its purpose is
-to carry information the function name cannot — specifically the **business
-reason** behind the expected outcome.
+Add a docstring **only when the function name cannot carry the business reason** — a non-obvious security constraint, a regulatory requirement, a subtle domain invariant, or a gotcha that would surprise a reader. If the name already says everything, omit the docstring.
 
 ```python
-# GOOD — adds business context the name can't fit
+# GOOD — docstring explains the non-obvious security reason the name can't fit
 def test_returns_403_if_user_does_not_exist(api_client):
     """
     Given a request targeting a user ID with no matching database record
@@ -49,19 +47,25 @@ def test_returns_403_if_user_does_not_exist(api_client):
     Then 403 Forbidden is returned — not 404 — to avoid leaking the
     existence of user IDs to potential enumerators.
     """
-```
 
-A docstring that merely restates the function name adds no value and should
-be removed:
+# GOOD — no docstring; name is fully self-explanatory
+def test_returns_correct_sum_when_given_two_positive_integers():
+    ...
 
-```python
-# BAD — zero added value, just noise
+# BAD — docstring restates the name, adds zero value
 def test_returns_403_if_user_does_not_exist():
     """Returns 403 if user does not exist."""
+
+# BAD — manufactured business reason for an obvious utility function
+def test_returns_true_when_list_is_empty():
+    """
+    Given an empty list
+    When is_empty() is called
+    Then True is returned — callers rely on this to skip iteration.
+    """
 ```
 
-If you cannot articulate a business reason beyond what the name already says,
-omit the docstring entirely.
+When a docstring is warranted, use Given/When/Then format with the business reason in the Then clause.
 
 ---
 

@@ -1,5 +1,5 @@
 ---
-name: design-doc-generator
+name: generating-design-doc
 description: Generate a production-grade architecture and design document for an existing system from its codebase, decision files, and any other source material. The output is a single Markdown file with embedded Mermaid diagrams (architecture, infrastructure, data flow, sequence) plus engineering-concern sections (trade-offs, NFRs, failure modes, integrations, technical debt). Use this skill whenever the user asks to "write an architecture doc," "create a design document," "document this system/service/component," "generate a design doc for the codebase," "produce architectural diagrams from code," "do a system writeup," "create technical documentation with diagrams," or anything similar — even when they don't say the word "skill." Trigger this for any request that combines (a) an existing codebase or system and (b) an ask to produce structured architectural documentation. Do NOT use this for greenfield design proposals (no code yet), for code review without a doc deliverable, or for short README-style summaries.
 ---
 

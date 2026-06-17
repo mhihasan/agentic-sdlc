@@ -1,16 +1,29 @@
 ---
 name: crafting-commits
 description: >
-  Analyze a feature branch against a target branch, evaluate existing commit quality, and produce a clean conventional-commit history plan with a human-review step before any git commands run. Use this skill whenever the user wants to clean up commits, rewrite git history, apply conventional commits, squash messy commits, prepare a branch for PR review, or says things like "clean up my commits", "fix my commit history", "rewrite commits", "prepare commits for PR", "conventional commits", "squash and rewrite", "tidy my branch", or "commits are a mess". Also trigger when a user shares a diff or branch and asks how to structure commits for a reviewer.
+  Use when the user wants to clean up commits, rewrite git history, apply conventional commits, squash messy commits, prepare a branch for PR review, or says things like "clean up my commits", "fix my commit history", "rewrite commits", "prepare commits for PR", "conventional commits", "squash and rewrite", "tidy my branch", or "commits are a mess". Also trigger when a user shares a diff or branch and asks how to structure commits for a reviewer.
 ---
 
 # crafting-commits
 
-Analyzes changes on a feature branch, evaluates the semantic quality of existing commits, and produces a clean conventional-commit history that helps reviewers navigate a PR. Outputs a human-readable plan (markdown) for approval before touching anything.
+Analyzes changes on a feature branch, evaluates the semantic quality of existing commits, and produces a clean conventional-commit history that helps reviewers navigate a PR. Presents the plan in chat for human approval before touching anything.
 
 **No auto-commit:** This skill proposes the rewritten history and prints the exact git commands. The developer reviews and runs all git operations — this skill never self-initiates `git commit`, `git reset`, `git push`, or `git merge`. The human-review gate in Step 5 is mandatory and cannot be skipped.
 
-**Modes:** Check the arguments for `auto`; **collaborative is the default.** In collaborative mode you produce the plan, present it, and execute on confirmation (Step 6). In `auto` mode you produce and self-review the plan with no conversational pauses, then **stop at the execution boundary** — `auto` does **not** relax the git gate. Even in `auto`, the developer triggers every git command. `auto` only removes the chit-chat, never the Step 5 gate.
+**Modes:** Check the arguments for `auto`; **collaborative is the default.** In collaborative mode you produce the plan, present it in chat, and execute on confirmation (Step 6). In `auto` mode you produce and self-review the plan with no conversational pauses, then **stop at the execution boundary** — `auto` does **not** relax the git gate. Even in `auto`, the developer triggers every git command. `auto` only removes the chit-chat, never the Step 5 gate.
+
+---
+
+## Input Validation
+
+Before doing anything, verify:
+
+| Check | Action on failure |
+|---|---|
+| Inside a git repo | Stop — tell the developer this skill requires a git repository |
+| Current branch is not the default branch (`main` / `master` / `develop`) | Stop — commits on the default branch should not be rewritten |
+| At least one commit ahead of the target branch | Stop — nothing to rewrite; tell the developer |
+| No active rebase or merge in progress (`git status`) | Stop — resolve the rebase/merge first |
 
 ---
 
@@ -101,100 +114,9 @@ See `references/conventional-commits.md` for valid types and scope guidance.
 
 ---
 
-### Step 4 — Produce the plan document
+### Step 4 — Self-review the commit plan
 
-**Determine the output path before writing:**
-
-1. Check the conversation for a Jira ticket number (patterns: `ABC-123`, `PROJ-456`, any `[A-Z]+-[0-9]+`). Also check the current branch name — branches are often named `feature/ABC-123-description` or `ABC-123/something`.
-2. If a ticket number is found:
-   - Check if `tickets/<TICKET>/` exists in the repo root.
-   - If it exists, write to `tickets/<TICKET>/commit-plan-<TICKET>.md` — co-located with the ticket and plan files.
-   - If it does not exist, fall back to `local-dev/plans/commit-plan-<TICKET>.md`. Create the directory if needed: `mkdir -p local-dev/plans`.
-3. If no ticket number is found, write to `local-dev/plans/commit-plan.md`. Create the directory if needed: `mkdir -p local-dev/plans`.
-
-Final path examples:
-- With ticket dir present: `tickets/ABC-123/commit-plan-ABC-123.md`
-- With ticket but no ticket dir: `local-dev/plans/commit-plan-ABC-123.md`
-- Without ticket: `local-dev/plans/commit-plan.md`
-
-Output a markdown file at that path. Structure:
-
-```markdown
-# Commit Plan — <branch> → <target_branch>
-
-Merge base: <hash>
-Files changed: <N>
-Existing commits: <N> | Keeping: <N> | Rewriting: <N>
-
----
-
-## Existing Commit Assessment
-
-| Commit | Short SHA | Verdict | Reason |
-|--------|-----------|---------|--------|
-| `feat: add login` | `abc1234` | keep | Conventional, atomic, semantic |
-| `wip stuff` | `def5678` | rewrite | Vague, mixed concerns |
-| `fix` | `ghi9012` | rewrite | Missing scope, non-semantic |
-
----
-
-## Proposed Commit Sequence
-
-### Commit 1 of N
-**Message:** `type(scope): description`
-**Why:** <one sentence explaining why this is a logical unit>
-**Files:**
-- `path/to/file.ts`
-- `path/to/other.ts`
-
-**Git commands:**
-```bash
-git reset <merge_base>           # unstage everything back to merge base
-git add path/to/file.ts path/to/other.ts
-git commit -m "type(scope): description"
-```
-
-### Commit 2 of N
-...
-
----
-
-## Full Execution Script
-
-> Review the plan above before running. This script rewrites history.
-> If you have a remote branch, you will need to force-push: `git push --force-with-lease`
-
-```bash
-#!/usr/bin/env bash
-set -e
-
-MERGE_BASE="<hash>"
-
-# Reset to merge base (keeps all changes in working tree)
-git reset "$MERGE_BASE"
-
-# Commit 1 — type(scope): description
-git add <files>
-git commit -m "type(scope): description"
-
-# Commit 2 — ...
-git add <files>
-git commit -m "..."
-
-# ... etc
-
-echo "Done. Review with: git log --oneline"
-echo "Force push when ready: git push --force-with-lease"
-```
-```
-
----
-
-### Step 4.5 — Self-review the commit plan
-
-Before presenting the plan to the developer, review it against this checklist and fix any failure.
-These are objective checks — they run in **both** modes (the developer reviews a pre-vetted plan, not
-a first draft).
+Before presenting the plan, review it against this checklist and fix any failure. These are objective checks — they run in **both** modes.
 
 | Check | Pass condition |
 |---|---|
@@ -205,11 +127,67 @@ a first draft).
 | Linear history | Merge commits excluded; binary/generated files flagged |
 | Script matches | The execution script's `git add` file list reconciles exactly with the diff's file list |
 
-### Step 5 — Human review
+---
 
-After producing the plan file, stop and tell the user the exact path it was saved to, then say:
+### Step 5 — Present plan in chat (human gate)
 
-> "Plan saved to `<resolved-path>`. Review the proposed commits and the execution script. Edit the file if anything needs changing, then tell me to proceed — or give me feedback and I'll revise the plan."
+Present the full plan directly in chat. **Do not write it to a file.** Use this structure:
+
+````markdown
+## Commit Plan — <branch> → <target_branch>
+
+Merge base: `<hash>`
+Files changed: <N> | Existing commits: <N> | Keeping: <N> | Rewriting: <N>
+
+---
+
+### Existing Commit Assessment
+
+| Commit | Short SHA | Verdict | Reason |
+|--------|-----------|---------|--------|
+| `feat: add login` | `abc1234` | keep | Conventional, atomic, semantic |
+| `wip stuff` | `def5678` | rewrite | Vague, mixed concerns |
+
+---
+
+### Proposed Commit Sequence
+
+**Commit 1 of N — `type(scope): description`**
+Why: <one sentence explaining why this is a logical unit>
+Files: `path/to/file.ts`, `path/to/other.ts`
+
+**Commit 2 of N — `type(scope): description`**
+...
+
+---
+
+### Execution Script
+
+> Review the commits above before running. This script rewrites history.
+> If you have a remote branch, you will need to force-push: `git push --force-with-lease`
+
+```bash
+#!/usr/bin/env bash
+set -e
+
+MERGE_BASE="<hash>"
+
+git reset "$MERGE_BASE"
+
+git add <files>
+git commit -m "type(scope): description"
+
+git add <files>
+git commit -m "type(scope): description"
+
+echo "Done. Review with: git log --oneline"
+echo "Force push when ready: git push --force-with-lease"
+```
+````
+
+After presenting the plan, say:
+
+> "Review the proposed commits and execution script above. Tell me to proceed, or give me feedback and I'll revise."
 
 **Do not run any git reset or commit commands until the user explicitly confirms.**
 
@@ -218,11 +196,15 @@ After producing the plan file, stop and tell the user the exact path it was save
 ### Step 6 — Execute (on confirmation)
 
 Once the user confirms:
-1. Run the execution script from the plan
+1. Run the execution script
 2. Show `git log --oneline` output after completion
 3. Remind user to force-push if the branch has a remote: `git push --force-with-lease`
 
 If any step fails (merge conflict, wrong file state, etc.), stop immediately and report the exact error before attempting recovery.
+
+After successful execution, say:
+
+> "Commits are clean. Run `superpowers:finishing-a-development-branch` when you're ready to merge, open a PR, or discard the branch."
 
 ---
 
@@ -232,7 +214,7 @@ If any step fails (merge conflict, wrong file state, etc.), stop immediately and
 Skip the assessment table. Go straight to designing the commit plan from the diff.
 
 **All existing commits are clean:**
-Still produce the plan document. Show the assessment table with all ✅, confirm the sequence looks right, and offer to either proceed as-is or re-evaluate if the user wants different groupings.
+Still present the plan in chat. Show the assessment table with all keep verdicts, confirm the sequence looks right, and offer to either proceed as-is or re-evaluate if the user wants different groupings.
 
 **Merge commits in the range:**
 Note them in the assessment. Do not include merge commits in the rewritten history — the clean sequence should be linear.

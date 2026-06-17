@@ -1,6 +1,6 @@
 ---
 name: fetching-tickets
-description: Use when the user provides a Jira ticket URL or key and wants it saved as a local markdown file with all assets (images, attachments). Triggers on phrases like "pull this ticket", "save ticket to markdown", "download ticket", "create a local copy of this Jira issue".
+description: Use when fetching a Jira ticket to disk is needed as a standalone operation. Normally invoked by start-task — use this directly only if you already have a branch set up and only need the ticket file. Triggers on "pull this ticket", "save ticket to markdown", "download ticket".
 ---
 
 # Fetching Tickets
