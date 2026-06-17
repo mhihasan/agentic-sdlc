@@ -37,6 +37,17 @@ Create a TodoWrite item per step.
 - **Diff size:** >3000 lines → warn about token cost, offer to scope. >8000 → strongly recommend scoping / batching.
 - If a check fails, stop and report. Don't proceed on empty/invalid data.
 
+**Gate check:** Locate `REVIEW-LOG.md` in the ticket directory. Count the `implementing-tasks-T*` stamps and compare against the number of tasks in the plan file. All tasks must be stamped before code review begins.
+
+```bash
+grep "Human Review:.*implementing-tasks-T" <plan-dir>/REVIEW-LOG.md
+```
+
+- **Any task stamp missing:** halt:
+  > "This step requires a human review stamp for every task from `implementing-tasks`. Missing: implementing-tasks-T<n>. Approve each task before running code review."
+- **All AUTO stamps:** note — "Note: all implementing-tasks gates were AI-conducted in auto mode" — then continue.
+- **All APPROVED (or mixed):** proceed normally (mixed AUTO/APPROVED is fine).
+
 ### 2. Read the changeset (silently)
 
 - **Pipeline:** read the plan file (requirements, decisions, task spec, scope boundaries). Then check for a ticket file beside the plan (same directory, e.g. `PROJ-123.md`) — if found, read it in full. The ticket is the ground truth for acceptance criteria; the plan may omit or reframe details.
@@ -153,6 +164,28 @@ Sections: **Metadata** (mode, target, date, stack, checks run/skipped, files/lin
 
 **Pipeline:** ✅ PASS (no must-fix) · ⚠️ PASS WITH FINDINGS (should-fix/manual remain) · ❌ FAIL (must-fix or task-completion gaps).
 **General:** ✅ APPROVE (no Critical/High) · ⚠️ APPROVE WITH COMMENTS (no Critical, minor High) · ❌ REQUEST CHANGES (Critical, or 3+ High, or systemic).
+
+### Review Gate
+
+After presenting the report, open the gate.
+
+**Collaborative mode (default):**
+
+> "Review the code review report above. Type `approve` to stamp it and proceed to crafting-commits, or describe what needs fixing."
+
+Wait for `approve`. On approval, write (or upsert) in `<plan-dir>/REVIEW-LOG.md`:
+```
+> **Human Review:** APPROVED — YYYY-MM-DD — reviewing-code
+```
+Then tell the developer: `Stamped REVIEW-LOG.md. Next: /crafting-commits`
+
+A ❌ FAIL or ❌ REQUEST CHANGES verdict does not offer the gate — direct the developer to `superpowers:receiving-code-review` first.
+
+**Auto mode:** On PASS or PASS WITH FINDINGS, write the stamp automatically:
+```
+> **Human Review:** AUTO — YYYY-MM-DD — reviewing-code
+```
+On FAIL, do not write a stamp — halt and invoke `superpowers:receiving-code-review`.
 
 ## Re-review Protocol
 
