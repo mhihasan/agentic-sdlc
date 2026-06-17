@@ -6,6 +6,9 @@ description: >
   this test file", "fix a failing test", "how should I test this hook/utility/service",
   "what's wrong with my test?", or any time a React + Vitest + TypeScript project needs
   test coverage. Covers component tests, hooks, utilities, and async logic.
+model: inherit
+color: lightcyan
+license: MIT
 ---
 
 # testing-vitest

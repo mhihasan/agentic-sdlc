@@ -1,6 +1,9 @@
 ---
 name: fetching-tickets
 description: Use when fetching a Jira ticket to disk is needed as a standalone operation. Normally invoked by start-task — use this directly only if you already have a branch set up and only need the ticket file. Triggers on "pull this ticket", "save ticket to markdown", "download ticket".
+model: inherit
+color: lightyellow
+license: MIT
 ---
 
 # Fetching Tickets

@@ -8,6 +8,9 @@ description: >
   coverage is the intent. Also triggers when a pytest file is shown and the
   user asks for feedback, improvements, or a rewrite. Do not wait for the user
   to say "pytest" explicitly — trigger whenever testing Python code is the intent.
+model: inherit
+color: lightcyan
+license: MIT
 ---
 
 # testing-pytest
