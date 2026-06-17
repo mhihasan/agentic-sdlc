@@ -38,7 +38,6 @@ for arg in "$@"; do
   case "$arg" in
     --scope=user)    SCOPE="user" ;;
     --scope=project) SCOPE="project" ;;
-    --scope=both)    SCOPE="both" ;;
   esac
 done
 
@@ -48,25 +47,24 @@ echo "────────────────────────�
 
 if [ -z "$SCOPE" ]; then
   echo ""
-  echo "Usage: ./install.sh --scope=user|project|both"
+  echo "Usage: ./install.sh --scope=user|project"
   echo ""
   echo "  --scope=user     Install to ~/.claude/skills/  (available in all projects)"
   echo "  --scope=project  Install to .claude/skills/    (current directory only)"
-  echo "  --scope=both     Install to both locations"
   echo ""
   exit 1
 fi
 
 # ── INSTALL ───────────────────────────────────────────────────────────────────
 
-if [ "$SCOPE" = "user" ] || [ "$SCOPE" = "both" ]; then
+if [ "$SCOPE" = "user" ]; then
   USER_SKILLS="$HOME/.claude/skills"
   echo ""
   echo "[user scope] $USER_SKILLS"
   link_skills "$USER_SKILLS"
 fi
 
-if [ "$SCOPE" = "project" ] || [ "$SCOPE" = "both" ]; then
+if [ "$SCOPE" = "project" ]; then
   PROJECT_SKILLS="$(pwd)/.claude/skills"
   echo ""
   echo "[project scope] $PROJECT_SKILLS"

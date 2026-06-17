@@ -41,7 +41,6 @@ git clone git@github.com:mhihasan/coding-agent-skills.git
 cd coding-agent-skills
 ./install.sh --scope=user      # ~/.claude/skills/ — available in all projects
 ./install.sh --scope=project   # .claude/skills/  — current project only
-./install.sh --scope=both      # both locations
 ```
 
 Safe to re-run: existing symlinks are updated, real directories are never overwritten.
