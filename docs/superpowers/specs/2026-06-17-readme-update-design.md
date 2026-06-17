@@ -78,8 +78,7 @@ The diagram should be self-explanatory without any surrounding prose. To achieve
 
 1. **Node labels use plain English** — describe what the step does, not just its name. Example: `"fetch ticket, create branch"` not just `"picking-up-task"`.
 2. **Edge labels explain transitions** — `PROCEED`, `DO NOT PROCEED`, `PASS`, `FAIL`, `after each task`, `all tasks done`.
-3. **A legend subgraph** at the bottom explains the four node colours so a first-time reader doesn't have to guess.
-4. **Gate labels are action-oriented** — `"you review & approve"` rather than `"human gate: stamp"`.
+3. **Gate labels are action-oriented** — `"✋ you review & approve"` rather than `"human gate: stamp"`.
 
 ### Full updated Mermaid source
 
@@ -114,12 +113,6 @@ flowchart TD
     RCR --> RC
     HG3 --> CC
 
-    subgraph Legend
-        L1(["superpowers step"]):::sp
-        L2["pipeline step"]:::pipe
-        L3{"AI judge"}:::judge
-        L4{{"✋ human gate"}}:::gate
-    end
 ```
 
 ---
