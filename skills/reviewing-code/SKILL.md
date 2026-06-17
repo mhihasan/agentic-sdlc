@@ -134,6 +134,15 @@ Zero findings → exactly:
 ```
 No "everything looks good" padding.
 
+**STOP before delivering the report.** Check:
+- [ ] All dispatched check agents returned a result (no silent failures)
+- [ ] Every changed file appears in at least one agent's scope
+- [ ] Severity scale applied correctly (Critical = blocks merge, not just "important")
+- [ ] Verdict matches the highest severity finding (e.g., any Critical → FAIL)
+- [ ] No duplicate findings across agents (deduplicated)
+
+Fix any failures before presenting the report.
+
 ## Report
 
 General mode: save to repo root as `CODE-REVIEW-{PR-n|BRANCH-name|STAGED-date|DIFF-name}.md`. Pipeline mode: present inline.
