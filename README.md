@@ -87,17 +87,7 @@ Safe to re-run: existing symlinks are updated, real directories are never overwr
 
 ## Quickstart
 
-**Option A: review any branch right now**
-
-```
-/reviewing-code branch
-```
-
-Point it at your current branch. It dispatches parallel AI judges, filters the diff by domain, and produces a triage-first report. No plan file needed.
-
----
-
-**Option B: full pipeline from a Jira ticket**
+**Option A: full pipeline from a Jira ticket**
 
 ```bash
 # 1. Install the superpowers plugin (required dependency)
@@ -131,6 +121,16 @@ Point it at your current branch. It dispatches parallel AI judges, filters the d
 ```
 
 Each step is independently usable. Enter at any point if the upstream artifact already exists.
+
+---
+
+**Option B: review any branch right now**
+
+```
+/reviewing-code branch
+```
+
+Point it at your current branch. It dispatches parallel AI judges, filters the diff by domain, and produces a triage-first report. No plan file needed.
 
 ## Skills Reference
 
