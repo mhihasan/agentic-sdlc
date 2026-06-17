@@ -180,6 +180,7 @@ Appends TDD-ready task specs into an existing plan file. Each task includes a te
 | **Input** | Plan file (`local-dev/tickets/PROJ-123/PLAN-PROJ-123.md`) |
 | **Output** | `# Tasks` section appended to the same plan file |
 | **Auto mode** | Supported, drafts and appends without pausing |
+| **Writes** | `generating-tasks` stamp in `REVIEW-LOG.md` after you approve |
 
 ```bash
 /generating-tasks local-dev/tickets/PROJ-123/PLAN-PROJ-123.md
@@ -198,6 +199,8 @@ AI-as-judge that evaluates the plan + tasks against the ticket before any code i
 | **Output** | Verdict report with BLOCKER/SHOULD-FIX/NIT findings; appends `> **Plan Review:** PROCEED — YYYY-MM-DD` marker to the plan on pass |
 | **Auto mode** | Supported, appends verdict marker automatically; on DO NOT PROCEED automatically invokes `receiving-plan-review`, fixes the plan, and re-runs review |
 | **Verdict** | `PROCEED` / `PROCEED WITH CHANGES` / `DO NOT PROCEED` |
+| **Checks** | `generating-tasks` stamp in `REVIEW-LOG.md` |
+| **Writes** | `reviewing-plan` stamp in `REVIEW-LOG.md` after you approve |
 
 ```bash
 /reviewing-plan local-dev/tickets/PROJ-123/PLAN-PROJ-123.md
@@ -242,6 +245,7 @@ Implements a task spec via TDD. Auto-selects `testing-pytest` (Python) or `testi
 | **Output** | Working code with passing tests; task status updated to `done` in plan file |
 | **Auto mode** | Supported, runs full TDD cycle without pausing; stops on unexpected failures |
 | **Requires** | PROCEED verdict marker in plan file |
+| **Checks** | `reviewing-plan` stamp in `REVIEW-LOG.md` |
 
 ```bash
 /implementing-tasks local-dev/tickets/PROJ-123/PLAN-PROJ-123.md        # collaborative, pauses for approval
@@ -262,6 +266,7 @@ Triage-first code review. Dispatches parallel AI judges filtered by domain (Type
 | **Output** | `CODE-REVIEW-{identifier}.md` with severity-tiered findings (🔴 Critical → ⚠️ Manual) |
 | **Auto mode** | Supported, skips triage confirmation and proceeds directly to review; on FAIL automatically invokes `superpowers:receiving-code-review`, fixes findings, and re-runs review |
 | **Verdict** | Pipeline: `PASS` / `PASS WITH FINDINGS` / `FAIL` · General: `APPROVE` / `APPROVE WITH COMMENTS` / `REQUEST CHANGES` |
+| **Writes** | `reviewing-code` stamp in `REVIEW-LOG.md` after you approve |
 
 ```bash
 /reviewing-code branch                                             # review current branch against main
@@ -289,6 +294,7 @@ Rewrites a messy branch history into clean conventional commits. Presents the pl
 | **Input** | Current git branch (reads history automatically) |
 | **Output** | Commit plan presented in chat with proposed sequence and ready-to-run bash script |
 | **Auto mode** | Supported, produces plan without pausing; always halts before executing any git commands |
+| **Checks** | `reviewing-code` stamp in `REVIEW-LOG.md` |
 
 ```bash
 /crafting-commits
