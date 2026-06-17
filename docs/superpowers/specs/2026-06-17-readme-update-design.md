@@ -92,7 +92,7 @@ flowchart TD
     ST(["① pick up ticket\nset up a branch\n/picking-up-task"]):::sp
     PFT["② read the codebase\nwrite an implementation plan\n/planning-from-ticket"]:::pipe
     GT["③ break the plan into\nsmall testable tasks\n/generating-tasks"]:::pipe
-    HG1{{"✋ review the tasks"}}:::gate
+    HG1{{"✋ you review the tasks"}}:::gate
     RP{"④ AI reviews the plan\nbefore any code is written\n/reviewing-plan"}:::judge
     RPR["challenge or accept each finding\nupdate the plan\n/receiving-plan-review"]:::pipe
     HG2{{"✋ review the plan verdict\nthen start coding"}}:::gate
