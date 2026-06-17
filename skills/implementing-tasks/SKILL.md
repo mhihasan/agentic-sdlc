@@ -1,7 +1,7 @@
 ---
 name: implementing-tasks
 description: "Use when implementing a task specification with test-driven development and you want the right testing skill picked automatically per project type. Pass 'auto' as argument for autonomous mode; default is collaborative."
-model: inherit
+model: claude-sonnet-4-6  # Claude Code only; other tools use their session model
 color: lightgreen
 license: MIT
 ---

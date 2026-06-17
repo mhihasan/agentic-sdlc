@@ -332,17 +332,19 @@ Self-review is cheap and always runs. AI-as-judge is targeted. The split exists 
 | [5] `implementing-tasks` | REQUIRED: `superpowers:test-driven-development` + `testing-pytest` / `testing-vitest` · `superpowers:systematic-debugging` on wrong-reason RED · `superpowers:dispatching-parallel-agents` on multi-failures · `superpowers:verification-before-completion` before marking done · `superpowers:requesting-code-review` mid-task |
 | [6] `reviewing-code` | ON FAIL: `superpowers:receiving-code-review` (verify-before-fix) · ADOPT: `superpowers:requesting-code-review` (SHA convention) |
 
-### Recommended model tiers
+### Model selection
 
-Skills use `model: inherit` (your session model). Judge subagents are dispatched with a strong model at dispatch time, not pinned in frontmatter.
+In Claude Code, each skill pins its own model — you don't need to switch manually. Other tools (OpenCode, Cursor, Copilot) ignore the `model` field and use their session model.
 
-| Step | Role | Recommended tier |
+| Skill | Model | Why |
 |---|---|---|
-| `picking-up-task`, `generating-tasks` | Mechanical / extraction | Any capable model |
-| `planning-from-ticket`, `crafting-commits` | Reasoning + writing | Default session model |
-| `implementing-tasks` | TDD cycle | Default session model |
-| `reviewing-plan` judge subagent | Subjective quality judgment | **Strong model** (e.g. `claude-opus-4-8`) |
-| `reviewing-code` check subagents | Subjective quality judgment | **Strong model** (e.g. `claude-opus-4-8`) |
+| `picking-up-task` | Haiku | Mechanical: fetch ticket, create file |
+| `generating-tasks` | Sonnet | Task decomposition, no deep design judgment needed |
+| `implementing-tasks` | Sonnet | TDD cycle needs solid reasoning, not Opus-level |
+| `crafting-commits` | Haiku | Mechanical: read history, format commits |
+| `planning-from-ticket` | Opus | Highest-stakes reasoning: codebase exploration + design decisions |
+| `reviewing-plan` | Opus | Subjective judgment before any code is written |
+| `reviewing-code` | Opus | Where self-preference bias gets caught — model quality matters most here |
 
 ## Book Skills
 

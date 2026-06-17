@@ -2,7 +2,7 @@
 name: generating-tasks
 description: "Use when a feature/implementation plan exists (e.g. a PLAN-<KEY>.md produced by planning-from-ticket) and the user wants TDD-ready task specs created from it before implementation. Triggers on 'generate tasks from this plan', 'turn the plan into tasks', 'break the plan into TDD tasks'. Pass 'auto' as argument for autonomous mode; default is collaborative."
 license: MIT
-model: inherit
+model: claude-sonnet-4-6  # Claude Code only; other tools use their session model
 color: peachpuff
 ---
 

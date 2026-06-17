@@ -1,7 +1,7 @@
 ---
 name: picking-up-task
 description: Use when the user wants to start a new task — accepts a Jira ticket URL, Jira key, or local ticket file path. Triggers on "start task", "begin PROJ-42", "set up a branch for", "start working on PROJ-42".
-model: inherit
+model: claude-haiku-4-5  # Claude Code only; other tools use their session model
 color: cyan
 license: MIT
 ---

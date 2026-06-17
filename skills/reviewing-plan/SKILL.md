@@ -2,7 +2,7 @@
 name: reviewing-plan
 description: >
   Use when a PLAN+TASKS markdown file exists and the user wants it judged against its ticket BEFORE any code is written. Triggers on 'review this plan', 'is this plan good to proceed', 'check the plan before we code', 'AI-as-judge on the plan'.
-model: inherit
+model: claude-opus-4-8  # Claude Code only; other tools use their session model
 color: lightyellow
 license: MIT
 ---

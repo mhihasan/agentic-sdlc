@@ -2,7 +2,7 @@
 name: crafting-commits
 description: >
   Use when the user wants to clean up commits, rewrite git history, apply conventional commits, squash messy commits, prepare a branch for PR review, or says things like "clean up my commits", "fix my commit history", "rewrite commits", "prepare commits for PR", "conventional commits", "squash and rewrite", "tidy my branch", or "commits are a mess". Also trigger when a user shares a diff or branch and asks how to structure commits for a reviewer.
-model: inherit
+model: claude-haiku-4-5  # Claude Code only; other tools use their session model
 color: lavender
 license: MIT
 ---

@@ -5,7 +5,7 @@ description: >
   wants an implementation plan written to a PLAN file beside it. Triggers on
   phrases like 'read this ticket and make a plan', 'plan PROJ-1234', 'write an
   implementation plan for this spec'.
-model: inherit
+model: claude-opus-4-8  # Claude Code only; other tools use their session model
 color: lightblue
 license: MIT
 ---
