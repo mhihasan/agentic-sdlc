@@ -1,11 +1,12 @@
 ---
 name: picking-up-task
-description: Use when the user wants to start a new task — accepts a Jira ticket URL, Jira key, or local ticket file path. Triggers on "start task", "begin PROJ-42", "set up a branch for", "start working on PROJ-42". Do not trigger automatically.
+description: Use when the user wants to start a new task — accepts a Jira ticket URL, Jira key, or local ticket file path. Triggers on "start task", "begin PROJ-42", "set up a branch for", "start working on PROJ-42".
 model: inherit
 color: cyan
+license: MIT
 ---
 
-# Start Task
+# picking-up-task
 
 Bootstrap a new task: fetch the ticket (if remote) and set up a clean branch — so you can jump straight into planning.
 
@@ -14,7 +15,7 @@ Bootstrap a new task: fetch the ticket (if remote) and set up a clean branch —
 ## Where You Sit in the Pipeline
 
 ```
-[1] start-task          ← YOU ARE HERE
+[1] picking-up-task     ← YOU ARE HERE
 [2] planning-from-ticket
 [3] generating-tasks
 [4] reviewing-plan
@@ -31,7 +32,7 @@ Accepts one required argument. Detect the source type:
 |---|---|---|
 | Jira URL | `https://site.atlassian.net/browse/PROJ-42` | Extract key → invoke `fetching-tickets` skill |
 | Jira key | `PROJ-42` | Invoke `fetching-tickets` skill |
-| Local file | `./tickets/PROJ-42/PROJ-42.md` | Read file directly — no fetch |
+| Local file | `./$ARTIFACTS_ROOT/PROJ-42/PROJ-42.md` | Read file directly — no fetch |
 | Anything else | `"add password reset"` | **STOP — reject immediately** |
 
 **When input is unrecognized, say exactly this and do nothing else:**
@@ -50,11 +51,52 @@ When input is a Jira URL or key:
 
 **REQUIRED:** Invoke the `fetching-tickets` skill. Do not call Jira APIs directly (no MCP calls, no curl). `fetching-tickets` owns all Jira fetch logic — custom field discovery, image download, self-review. Do not re-implement it here.
 
-Once `fetching-tickets` completes, the ticket is at `tickets/PROJ-42/PROJ-42.md`.
+Once `fetching-tickets` completes, the ticket is at `$ARTIFACTS_ROOT/PROJ-42/PROJ-42.md`.
 
 ## Workspace Setup
 
 After the ticket is on disk (fetched or read from local file), set up the branch. This is **required** — do not skip it, do not hand off to `planning-from-ticket` before completing it.
+
+### 0. Resolve artifacts root
+
+Check for `.claude/artifacts-root` in the project root:
+
+```bash
+cat .claude/artifacts-root 2>/dev/null
+```
+
+- **If the file exists:** use its value as `ARTIFACTS_ROOT` for all path construction this run (e.g. `local-dev/tickets`).
+- **If the file does not exist:** ask the developer:
+
+  > "Where should ticket and plan files go? Press Enter for the default.
+  > Default: `local-dev/tickets`"
+
+  Write their answer (or the default) to `.claude/artifacts-root`:
+
+  ```bash
+  echo "local-dev/tickets" > .claude/artifacts-root   # or their chosen value
+  ```
+
+  Then tell them:
+  > "Saved to `.claude/artifacts-root`. Commit this file to share the setting with your team, or add it to `.gitignore` to keep it local:
+  > ```bash
+  > echo '.claude/artifacts-root' >> .gitignore
+  > ```"
+
+**One-time setup (first run only):** Ensure `local-dev/` is excluded from git globally so ticket and plan files are never accidentally committed to any project.
+
+Check whether `local-dev` is already in the global gitignore:
+```bash
+GITIGNORE_FILE="$(git config --global core.excludesfile 2>/dev/null || echo ~/.gitignore_global)"
+grep -q 'local-dev' "$GITIGNORE_FILE" 2>/dev/null \
+  && echo "already excluded" \
+  || echo "local-dev/" >> "$GITIGNORE_FILE"
+```
+If the global excludes file does not exist yet, create it:
+```bash
+echo "local-dev/" >> ~/.gitignore_global
+git config --global core.excludesfile ~/.gitignore_global
+```
 
 ### 1. Detect base branch
 
@@ -121,7 +163,7 @@ git checkout -b feat/PROJ-42/add-user-auth
 When `--worktree` is passed:
 
 ```
-/start-task PROJ-42 --worktree
+/picking-up-task PROJ-42 --worktree
 ```
 
 After confirming the branch name, invoke `superpowers:using-git-worktrees` instead of `git checkout -b`. Pass the constructed branch name to it. All worktree logic is owned by that skill.
@@ -130,16 +172,38 @@ Use `--worktree` when you have in-flight work on another branch, are dispatching
 
 ## Handoff
 
-Once the branch (or worktree) is ready, print exactly this and stop:
+Once the branch (or worktree) is ready, print the ticket summary and open the Review Gate.
+
+### Review Gate
+
+Present to the developer:
 
 ```
 Branch `feat/PROJ-42/add-user-auth` ready (based off `develop`).
-Ticket saved to `tickets/PROJ-42/PROJ-42.md`.
+Ticket saved to `$ARTIFACTS_ROOT/PROJ-42/PROJ-42.md`.
 
-Next: /planning-from-ticket tickets/PROJ-42/PROJ-42.md
+Review the ticket file above to confirm its content is correct before planning starts.
+Type `approve` to stamp it and proceed, or describe what needs fixing.
 ```
 
-No push commands. No extra guidance. No reminders.
+**Collaborative mode (default):** Wait for the developer to type `approve`. Any other response is a change request — address it and re-present. On `approve`:
+
+1. Write (or upsert) this line in `$ARTIFACTS_ROOT/PROJ-42/REVIEW-LOG.md` (create the file if absent, overwrite any existing `picking-up-task` line if present):
+   ```
+   > **Human Review:** APPROVED — YYYY-MM-DD — picking-up-task
+   ```
+2. Print:
+   ```
+   Stamped REVIEW-LOG.md. Next: /planning-from-ticket $ARTIFACTS_ROOT/PROJ-42/PROJ-42.md
+   ```
+
+**Auto mode:** Write the stamp automatically with `AUTO`:
+```
+> **Human Review:** AUTO — YYYY-MM-DD — picking-up-task
+```
+Then print: `Next: /planning-from-ticket $ARTIFACTS_ROOT/PROJ-42/PROJ-42.md`
+
+No push commands. No extra guidance beyond the next-step line.
 
 ## You Must NOT
 

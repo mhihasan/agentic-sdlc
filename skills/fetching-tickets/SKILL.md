@@ -1,6 +1,9 @@
 ---
 name: fetching-tickets
-description: Use when fetching a Jira ticket to disk is needed as a standalone operation. Normally invoked by start-task — use this directly only if you already have a branch set up and only need the ticket file. Triggers on "pull this ticket", "save ticket to markdown", "download ticket".
+description: Use when fetching a Jira ticket to disk is needed as a standalone operation. Normally invoked by picking-up-task — use this directly only if you already have a branch set up and only need the ticket file. Triggers on "pull this ticket", "save ticket to markdown", "download ticket".
+model: inherit
+color: lightyellow
+license: MIT
 ---
 
 # Fetching Tickets
@@ -249,7 +252,7 @@ None
 ## Output Layout
 
 ```
-tickets/
+local-dev/tickets/
   TICKET-KEY/
     TICKET-KEY.md
     images/
@@ -282,6 +285,8 @@ This skill is mechanical, so the mode mostly affects how a blocking dependency i
 
 - **Collaborative (default):** if a self-review check fails or a blocking dependency surfaces, raise it with the developer.
 - **Auto:** record the blocker prominently in the ticket file and continue; the fetch itself doesn't pause.
+
+**`auto` invariants:** No self-commit (N/A — writes a file, not a commit). No self-push (N/A). Halt and report if Jira API returns an error or required fields are missing. Ask on unresolvable ambiguity (e.g., duplicate ticket key in URL).
 
 ## Common Mistakes
 

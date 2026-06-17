@@ -2,15 +2,20 @@
 name: crafting-commits
 description: >
   Use when the user wants to clean up commits, rewrite git history, apply conventional commits, squash messy commits, prepare a branch for PR review, or says things like "clean up my commits", "fix my commit history", "rewrite commits", "prepare commits for PR", "conventional commits", "squash and rewrite", "tidy my branch", or "commits are a mess". Also trigger when a user shares a diff or branch and asks how to structure commits for a reviewer.
+model: inherit
+color: lavender
+license: MIT
 ---
 
 # crafting-commits
 
-Analyzes changes on a feature branch, evaluates the semantic quality of existing commits, and produces a clean conventional-commit history that helps reviewers navigate a PR. Presents the plan in chat for human approval before touching anything.
+Analyzes changes on a feature branch, evaluates the semantic quality of existing commits, and produces a clean conventional-commit history that helps reviewers navigate a PR.
 
 **No auto-commit:** This skill proposes the rewritten history and prints the exact git commands. The developer reviews and runs all git operations — this skill never self-initiates `git commit`, `git reset`, `git push`, or `git merge`. The human-review gate in Step 5 is mandatory and cannot be skipped.
 
-**Modes:** Check the arguments for `auto`; **collaborative is the default.** In collaborative mode you produce the plan, present it in chat, and execute on confirmation (Step 6). In `auto` mode you produce and self-review the plan with no conversational pauses, then **stop at the execution boundary** — `auto` does **not** relax the git gate. Even in `auto`, the developer triggers every git command. `auto` only removes the chit-chat, never the Step 5 gate.
+**Modes:** Check the arguments for `auto`; **collaborative is the default.** In collaborative mode you produce the plan, present it in chat, and execute on confirmation (Step 6). In `auto` mode you produce and self-review the plan with no conversational pauses, then **stop at the execution boundary** — `auto` does **not** relax the git gate. Even in `auto`, the developer triggers every git command. `auto` only removes the chit-chat, never the Step 5 gate. In both modes, the plan is presented in chat for human approval before any git operations run.
+
+**`auto` invariants:** No self-commit (the bash script is presented, not executed). No self-push. Halt if the branch cannot be analyzed (e.g., merge conflicts). Ask on unresolvable ambiguity.
 
 ---
 
@@ -24,6 +29,7 @@ Before doing anything, verify:
 | Current branch is not the default branch (`main` / `master` / `develop`) | Stop — commits on the default branch should not be rewritten |
 | At least one commit ahead of the target branch | Stop — nothing to rewrite; tell the developer |
 | No active rebase or merge in progress (`git status`) | Stop — resolve the rebase/merge first |
+| `REVIEW-LOG.md` has `reviewing-code` stamp | Halt — "This step requires a human review stamp from `reviewing-code`. Run `/reviewing-code` first and approve the review before crafting commits." Note `AUTO` stamps with a visibility note but do not block. |
 
 ---
 
@@ -188,6 +194,13 @@ echo "Force push when ready: git push --force-with-lease"
 After presenting the plan, say:
 
 > "Review the proposed commits and execution script above. Tell me to proceed, or give me feedback and I'll revise."
+
+On developer confirmation (`approve` or equivalent explicit go-ahead), before running the execution script, write (or upsert) in `REVIEW-LOG.md` (same directory as the plan/ticket file, or the repo root if no ticket directory is in context):
+```
+> **Human Review:** APPROVED — YYYY-MM-DD — crafting-commits
+```
+
+**Auto mode:** Step 5 still halts for the developer — `auto` does not relax the git gate (as documented in the skill header). Write the stamp when the developer confirms, same as collaborative.
 
 **Do not run any git reset or commit commands until the user explicitly confirms.**
 

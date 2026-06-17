@@ -1,13 +1,16 @@
 ---
 name: receiving-plan-review
 description: Use when a reviewing-plan verdict is DO NOT PROCEED or PROCEED WITH CHANGES and findings need to be worked through — before editing the plan. Triggers on "address plan findings", "fix the plan review", "work through plan blockers", or when reviewing-plan emits findings. Verify each finding against the ticket and codebase before accepting it.
+model: inherit
+color: mistyrose
+license: MIT
 ---
 
 # receiving-plan-review
 
-Work through `reviewing-plan` findings with technical rigor. Verify each finding before fixing it. Push back when findings are wrong.
+Work through `reviewing-plan` findings with technical rigor.
 
-**Core principle:** A finding is a claim, not an order. Verify it against the ticket and codebase before touching the plan.
+**Core principle:** A finding is a claim, not an order. Verify it against the ticket and codebase before touching the plan. Verify each finding before fixing it. Push back when findings are wrong.
 
 ## The Pattern
 

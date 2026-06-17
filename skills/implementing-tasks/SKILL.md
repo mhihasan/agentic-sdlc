@@ -1,8 +1,9 @@
 ---
 name: implementing-tasks
-description: "Use when implementing a task specification with test-driven development and you want the right testing skill picked automatically per project type. Does not plan features or generate task specs (use planning-from-ticket and generating-tasks for that). Pass 'auto' as argument for autonomous mode; default is collaborative."
+description: "Use when implementing a task specification with test-driven development and you want the right testing skill picked automatically per project type. Pass 'auto' as argument for autonomous mode; default is collaborative."
 model: inherit
 color: lightgreen
+license: MIT
 ---
 
 # Implementing Tasks
@@ -54,7 +55,7 @@ You run through the entire TDD cycle without pausing for confirmation. You still
 
 ## Your Input
 
-A plan document (e.g. a `PLAN-*.md` or ticket file) that contains both the feature plan and one or more task specs. The developer will specify which task to implement (e.g., "task T1 from PLAN-auth-login-flow.md").
+A plan document (e.g. a `PLAN-*.md` or ticket file) that contains both the feature plan and one or more task specs. The developer will specify which task to implement (e.g., "task T1 from PLAN-TICKET-KEY.md").
 
 The plan document typically has two parts:
 
@@ -123,11 +124,20 @@ Then pick up the next test and repeat.
 
 When you first receive a task to implement:
 
-0. **Workspace isolation** — In auto mode, always invoke `superpowers:using-git-worktrees` before writing the first test — agents run unattended and isolation is non-negotiable. In collaborative mode, `start-task` will have already set up the branch or worktree; skip this step unless the developer explicitly asks for a worktree.
+0. **Workspace isolation** — In auto mode, always invoke `superpowers:using-git-worktrees` before writing the first test — agents run unattended and isolation is non-negotiable. In collaborative mode, `picking-up-task` will have already set up the branch or worktree; skip this step unless the developer explicitly asks for a worktree.
 1. **Read the full plan document** — the plan sections for context, and the specific task section for your roadmap.
-1a. **Confirm the plan cleared `reviewing-plan`.** Look for a verdict marker in the plan file — a line matching `> **Plan Review:** PROCEED`. If none exists:
+1a. **Confirm the plan cleared `reviewing-plan`.** Check the plan file for a line beginning with `> **Plan Review:** PROCEED`.
+   This matches both `PROCEED` and `PROCEED WITH CHANGES` verdicts. DO NOT start if the only verdict line is `> **Plan Review:** DO NOT PROCEED`. If no verdict marker exists:
    - **Collaborative mode:** ask the developer to confirm a PROCEED verdict exists, or ask them to run `reviewing-plan` first. Do not start implementation on an unjudged plan.
    - **Auto mode:** refuse to start — there is no human to confirm, and an unjudged plan is a BLOCKER. Report that `reviewing-plan` must run first and emit its verdict marker.
+1b. **Check the human review gate.** Look for a `reviewing-plan` stamp in `REVIEW-LOG.md` (same directory as the plan file):
+   ```bash
+   grep "Human Review:.*reviewing-plan" <plan-dir>/REVIEW-LOG.md
+   ```
+   - **Absent (or file missing):** halt:
+     > "This step requires a human review stamp from `reviewing-plan`. Approve the plan review before starting implementation."
+   - **AUTO stamp:** note — "Note: upstream `reviewing-plan` was AI-conducted in auto mode" — then continue.
+   - **APPROVED stamp:** proceed normally.
 2. **Read CLAUDE.md** (if it exists) and **scan the relevant source code and test files** mentioned in the task spec to understand current state, patterns, and conventions.
 3. **Detect the project type and invoke the matching testing skill** (see "Testing Skill Selection" above).
 4. **Update the task's status** to `in progress` in the plan document.
@@ -177,6 +187,28 @@ Once every test scenario from the task spec has been through the RED → GREEN �
 **Mid-task review gate:** if there is a next task, invoke `superpowers:requesting-code-review` before starting it. Act on its findings using `superpowers:receiving-code-review` — verify each finding against codebase reality before fixing, push back with technical reasoning on findings that don't hold up. Critical findings block the next task; lower-severity findings are the developer's call.
 
 **Next step:** once all tasks are done, suggest the developer run `reviewing-code` for the final end-to-end review — but the review is their call to make, not yours to invoke.
+
+## Per-Task Review Gate
+
+After all tests for a task pass and before moving to the next task, open the Review Gate for that task.
+
+**Collaborative mode (default):**
+
+> "All tests for Task T<n> pass. Review the implementation above. Type `approve` to stamp it and move to the next task, or describe what needs fixing."
+
+Wait for `approve`. On approval, write (or upsert) in `<plan-dir>/REVIEW-LOG.md`:
+```
+> **Human Review:** APPROVED — YYYY-MM-DD — implementing-tasks-T<n>
+```
+(Replace `<n>` with the task number, e.g. `implementing-tasks-T1`.)
+
+**Auto mode:** Write the stamp automatically:
+```
+> **Human Review:** AUTO — YYYY-MM-DD — implementing-tasks-T<n>
+```
+Then continue to the next task.
+
+**After the final task:** tell the developer: `All tasks complete. Next: /reviewing-code`
 
 ## Alternative Execution Engine
 

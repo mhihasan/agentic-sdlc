@@ -1,23 +1,22 @@
 ---
 name: generating-design-doc
-description: Generate a production-grade architecture and design document for an existing system from its codebase, decision files, and any other source material. The output is a single Markdown file with embedded Mermaid diagrams (architecture, infrastructure, data flow, sequence) plus engineering-concern sections (trade-offs, NFRs, failure modes, integrations, technical debt). Use this skill whenever the user asks to "write an architecture doc," "create a design document," "document this system/service/component," "generate a design doc for the codebase," "produce architectural diagrams from code," "do a system writeup," "create technical documentation with diagrams," or anything similar — even when they don't say the word "skill." Trigger this for any request that combines (a) an existing codebase or system and (b) an ask to produce structured architectural documentation. Do NOT use this for greenfield design proposals (no code yet), for code review without a doc deliverable, or for short README-style summaries.
+description: >
+  Use when the user wants to document an existing codebase as a structured
+  architecture document. Triggers on "write an architecture doc", "create a
+  design document for this system", "document this service", "generate a
+  design doc from the codebase", "produce architectural diagrams from code",
+  "do a system writeup", "create technical documentation with diagrams", or
+  any request combining an existing codebase with an ask for structured
+  architectural documentation. Do NOT use for greenfield design proposals
+  (no code yet) or for short README-style summaries.
+model: inherit
+color: lightyellow
+license: MIT
 ---
 
 # Design Document Generator
 
-Generate a single, production-grade architecture and design document for an existing system, grounded in its real codebase and any provided decision/context files. The output is one self-contained Markdown file with embedded Mermaid diagrams, written for senior engineers who will operate, extend, or review the system.
-
-## When to use this skill
-
-Use this skill whenever the user wants structured architectural documentation produced from a real codebase. Typical triggers:
-
-- "Write a design doc for `<service>` / `<repo>` / `<directory>`."
-- "Document the architecture of this system."
-- "Generate architectural diagrams and a design writeup for the code in `<path>`."
-- "Create a technical design document for `<system>`, here are the decisions/ADRs/context."
-- The user provides a codebase path plus a decision file and asks for documentation.
-
-If the user is asking for something *other* than a structured architecture document — README, code review, greenfield proposal, single diagram, short summary — don't use this skill. It's overkill.
+Generates a single, production-grade architecture and design document for an existing system, grounded in its real codebase and any provided decision/context files.
 
 ## Required inputs
 
@@ -221,7 +220,7 @@ An empty section 11 on a non-trivial system is itself a red flag. If it ends up 
 
 ## Self-review checklist
 
-Before delivering, verify:
+**STOP before delivering the document.** Run this checklist — if any item fails, fix it before output:
 
 - [ ] Every Mermaid block parses (mentally trace each one — opening/closing, quoted labels, valid arrow syntax).
 - [ ] Every class/module/service name in the doc exists in the codebase.

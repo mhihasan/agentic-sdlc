@@ -14,7 +14,7 @@ You are NOT autonomous — the developer confirms scope. You do NOT write or fix
 
 ## Two Entry Modes
 
-- **Pipeline mode** — the user points you at a plan/spec file (any `PLAN*.md`, ticket, or spec the developer provides). You verify the implementation against that plan AND run quality checks. **Task Completion Verification is always included.** If a ticket file exists alongside the plan (e.g. `tickets/PROJ-123/PROJ-123.md`), read it too — acceptance criteria and context in the ticket take precedence over any summary in the plan. Make no assumption about which tool produced the plan or what ran before you — the plan and ticket files are the sources of truth.
+- **Pipeline mode** — the user points you at a plan/spec file (any `PLAN*.md`, ticket, or spec the developer provides). You verify the implementation against that plan AND run quality checks. **Task Completion Verification is always included.** If a ticket file exists alongside the plan (e.g. `local-dev/tickets/PROJ-123/PROJ-123.md`), read it too — acceptance criteria and context in the ticket take precedence over any summary in the plan. Make no assumption about which tool produced the plan or what ran before you — the plan and ticket files are the sources of truth.
 - **General mode** — no plan. A standard review of a PR, branch, staged changes, or a diff file.
 
 | Sub-mode | Target | Gather diff |
@@ -36,6 +36,17 @@ Create a TodoWrite item per step.
 - **ADOPT:** `superpowers:requesting-code-review`'s SHA convention — capture `HEAD_SHA` (`git rev-parse HEAD`) and `BASE_SHA` (`git merge-base HEAD origin/<base>`) to bound the review diff precisely. Reference these SHAs in the report so re-review agents target the exact same diff.
 - **Diff size:** >3000 lines → warn about token cost, offer to scope. >8000 → strongly recommend scoping / batching.
 - If a check fails, stop and report. Don't proceed on empty/invalid data.
+
+**Gate check:** Locate `REVIEW-LOG.md` in the ticket directory. Count the `implementing-tasks-T*` stamps and compare against the number of tasks in the plan file. All tasks must be stamped before code review begins.
+
+```bash
+grep "Human Review:.*implementing-tasks-T" <plan-dir>/REVIEW-LOG.md
+```
+
+- **Any task stamp missing:** halt:
+  > "This step requires a human review stamp for every task from `implementing-tasks`. Missing: implementing-tasks-T<n>. Approve each task before running code review."
+- **All AUTO stamps:** note — "Note: all implementing-tasks gates were AI-conducted in auto mode" — then continue.
+- **All APPROVED (or mixed):** proceed normally (mixed AUTO/APPROVED is fine).
 
 ### 2. Read the changeset (silently)
 
@@ -134,6 +145,15 @@ Zero findings → exactly:
 ```
 No "everything looks good" padding.
 
+**STOP before delivering the report.** Check:
+- [ ] All dispatched check agents returned a result (no silent failures)
+- [ ] Every changed file appears in at least one agent's scope
+- [ ] Severity scale applied correctly (Critical = blocks merge, not just "important")
+- [ ] Verdict matches the highest severity finding (e.g., any Critical → FAIL)
+- [ ] No duplicate findings across agents (deduplicated)
+
+Fix any failures before presenting the report.
+
 ## Report
 
 General mode: save to repo root as `CODE-REVIEW-{PR-n|BRANCH-name|STAGED-date|DIFF-name}.md`. Pipeline mode: present inline.
@@ -144,6 +164,28 @@ Sections: **Metadata** (mode, target, date, stack, checks run/skipped, files/lin
 
 **Pipeline:** ✅ PASS (no must-fix) · ⚠️ PASS WITH FINDINGS (should-fix/manual remain) · ❌ FAIL (must-fix or task-completion gaps).
 **General:** ✅ APPROVE (no Critical/High) · ⚠️ APPROVE WITH COMMENTS (no Critical, minor High) · ❌ REQUEST CHANGES (Critical, or 3+ High, or systemic).
+
+### Review Gate
+
+After presenting the report, open the gate.
+
+**Collaborative mode (default):**
+
+> "Review the code review report above. Type `approve` to stamp it and proceed to crafting-commits, or describe what needs fixing."
+
+Wait for `approve`. On approval, write (or upsert) in `<plan-dir>/REVIEW-LOG.md`:
+```
+> **Human Review:** APPROVED — YYYY-MM-DD — reviewing-code
+```
+Then tell the developer: `Stamped REVIEW-LOG.md. Next: /crafting-commits`
+
+A ❌ FAIL or ❌ REQUEST CHANGES verdict does not offer the gate — direct the developer to `superpowers:receiving-code-review` first.
+
+**Auto mode:** On PASS or PASS WITH FINDINGS, write the stamp automatically:
+```
+> **Human Review:** AUTO — YYYY-MM-DD — reviewing-code
+```
+On FAIL, do not write a stamp — halt and invoke `superpowers:receiving-code-review`.
 
 ## Re-review Protocol
 
@@ -166,6 +208,8 @@ Check the arguments for `auto`; **collaborative is the default.**
 - **Auto:** proceed with the proposed Run set from step 5 without waiting for confirmation; launch agents immediately. A ❌ FAIL / ❌ REQUEST CHANGES verdict still halts — auto does not proceed past a must-fix finding.
 
 **Invariant in both modes:** read-only — never write or fix code; the developer acts on findings.
+
+**`auto` invariants:** Read-only — no self-commit, no self-push. Halt on FAIL verdict (invoke `superpowers:receiving-code-review`). Ask on unresolvable ambiguity.
 
 ## You Must NOT
 
