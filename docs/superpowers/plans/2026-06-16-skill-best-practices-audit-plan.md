@@ -607,6 +607,80 @@ git commit -m "feat(pipeline): migrate artifact root from tickets/ to local-dev/
 
 ---
 
+## Task 13: Make artifacts root configurable in `picking-up-task`
+
+**Files:**
+- Modify: `skills/picking-up-task/SKILL.md`
+
+**Goal:** On first run per project, `picking-up-task` checks for a stored artifacts root. If none is found, it asks the developer once (defaulting to `local-dev/tickets/`) and stores the answer in `.claude/artifacts-root` in the project root. All subsequent path references in that session use the stored value.
+
+**Storage mechanism:** `.claude/artifacts-root` — a single-line plain text file containing the root path (e.g. `local-dev/tickets` or `dev/tickets`). This file should be gitignored (skill instructs user to add it to `.gitignore`).
+
+**Behaviour spec:**
+
+1. At the start of Workspace Setup, check for `.claude/artifacts-root`:
+   - If it exists: read the value and use it as `ARTIFACTS_ROOT` for all path construction in this run
+   - If it does not exist: ask the developer: *"Where should ticket and plan files go? (default: `local-dev/tickets`)"* — accept their answer or Enter to use the default, then write the value to `.claude/artifacts-root`
+
+2. All path construction in the skill uses `ARTIFACTS_ROOT` — e.g. `$ARTIFACTS_ROOT/TICKET-KEY/TICKET-KEY.md`
+
+3. After writing `.claude/artifacts-root`, instruct the developer to add it to `.gitignore` if they want it project-local:
+   ```bash
+   echo ".claude/artifacts-root" >> .gitignore
+   ```
+   Or to commit it if the whole team should share the same root.
+
+**Invariant:** The default, if the developer presses Enter, is `local-dev/tickets` — consistent with Task 12.
+
+- [ ] **Step 1: Read the file**
+
+Read `skills/picking-up-task/SKILL.md` in full to understand the current Workspace Setup section structure.
+
+- [ ] **Step 2: Add the artifacts root check to Workspace Setup**
+
+Insert the following block at the very start of the Workspace Setup section (before the One-time global gitignore setup block from Task 12):
+
+```markdown
+### 0. Resolve artifacts root
+
+Check for `.claude/artifacts-root` in the project root:
+
+```bash
+cat .claude/artifacts-root 2>/dev/null
+```
+
+- **If the file exists:** use its value as `ARTIFACTS_ROOT` for all path construction this run (e.g. `local-dev/tickets`).
+- **If the file does not exist:** ask the developer:
+
+  > "Where should ticket and plan files go? Press Enter for the default.
+  > Default: `local-dev/tickets`"
+
+  Write their answer (or the default) to `.claude/artifacts-root`:
+
+  ```bash
+  echo "local-dev/tickets" > .claude/artifacts-root   # or their chosen value
+  ```
+
+  Then tell them:
+  > "Saved to `.claude/artifacts-root`. Commit this file to share the setting with your team, or add it to `.gitignore` to keep it local:
+  > ```bash
+  > echo '.claude/artifacts-root' >> .gitignore
+  > ```"
+```
+
+- [ ] **Step 3: Update all hardcoded `local-dev/tickets/` path references in the body**
+
+Replace every hardcoded `local-dev/tickets/` path in the skill body with the variable form `$ARTIFACTS_ROOT/` so that the skill's own examples are consistent with the configured value.
+
+- [ ] **Step 4: Commit**
+
+```bash
+git add skills/picking-up-task/SKILL.md
+git commit -m "feat(picking-up-task): ask for artifacts root on first run, default local-dev/tickets, store in .claude/artifacts-root"
+```
+
+---
+
 ## Self-Review
 
 **Spec coverage:**
@@ -626,6 +700,7 @@ git commit -m "feat(pipeline): migrate artifact root from tickets/ to local-dev/
 - N4 generating-design-doc "When to use" section → Task 3 ✓
 - N5 picking-up-task "Do not trigger automatically" → Task 11 ✓
 - Artifact path migration (6 skills + README) → Task 12 ✓
+- Configurable artifacts root with first-run prompt → Task 13 ✓
 
 **Placeholder scan:** No TBDs, all steps contain specific instructions, all git commands are concrete.
 
