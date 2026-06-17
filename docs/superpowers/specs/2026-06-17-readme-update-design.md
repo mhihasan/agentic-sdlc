@@ -89,18 +89,18 @@ flowchart TD
     classDef sp fill:#dcfce7,stroke:#16a34a,color:#14532d
     classDef gate fill:#fed7aa,stroke:#ea580c,color:#7c2d12
 
-    ST(["① pick up ticket\nset up a branch"]):::sp
-    PFT["② read the codebase\nwrite an implementation plan"]:::pipe
-    GT["③ break the plan into\nsmall testable tasks"]:::pipe
+    ST(["① pick up ticket\nset up a branch\n/picking-up-task"]):::sp
+    PFT["② read the codebase\nwrite an implementation plan\n/planning-from-ticket"]:::pipe
+    GT["③ break the plan into\nsmall testable tasks\n/generating-tasks"]:::pipe
     HG1{{"✋ review the tasks"}}:::gate
-    RP{"④ AI reviews the plan\nbefore any code is written"}:::judge
-    RPR["challenge or accept each finding\nupdate the plan"]:::pipe
+    RP{"④ AI reviews the plan\nbefore any code is written\n/reviewing-plan"}:::judge
+    RPR["challenge or accept each finding\nupdate the plan\n/receiving-plan-review"]:::pipe
     HG2{{"✋ review the plan verdict\nthen start coding"}}:::gate
-    IT["⑤ write tests first, then code\ntask by task"]:::pipe
-    RC{"⑥ AI reviews the code\nindependent of who wrote it"}:::judge
-    RCR["challenge or accept each finding\nfix the code"]:::sp
+    IT["⑤ write tests first, then code\ntask by task\n/implementing-tasks"]:::pipe
+    RC{"⑥ AI reviews the code\nindependent of who wrote it\n/reviewing-code"}:::judge
+    RCR["challenge or accept each finding\nfix the code\nsuperpowers:receiving-code-review"]:::sp
     HG3{{"✋ review the code verdict\nthen commit"}}:::gate
-    CC(["⑦ clean up the commit history\nready to merge"]):::sp
+    CC(["⑦ clean up the commit history\nready to merge\n/crafting-commits"]):::sp
 
     ST --> PFT --> GT --> HG1 --> RP
     RP -->|PROCEED| HG2
