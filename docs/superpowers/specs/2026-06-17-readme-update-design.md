@@ -68,8 +68,9 @@ Shape: hexagon (`{{...}}` in Mermaid flowchart syntax).
 |---|---|
 | `human-gate: generating-tasks stamp` | `generating-tasks` → `reviewing-plan` |
 | `human-gate: reviewing-plan stamp` | `reviewing-plan` PROCEED → `implementing-tasks` |
-| `human-gate: per-task stamp (T1…Tn)` | each task iteration inside `implementing-tasks` |
 | `human-gate: reviewing-code stamp` | `reviewing-code` PASS → `crafting-commits` |
+
+Note: the mid-task review inside `implementing-tasks` is handled by `superpowers:requesting-code-review` (an AI sub-skill) — not a human gate. It does not appear in the diagram.
 
 ### Design principles for the diagram
 
@@ -96,11 +97,10 @@ flowchart TD
     RP{"④ AI judges the plan\nfresh context · strong model"}:::judge
     RPR["verify findings\nfix plan"]:::pipe
     HG2{{"✋ you review AI verdict\nbefore implementation starts"}}:::gate
-    IT["⑤ implement task by task\nTDD · RED → GREEN → REFACTOR"]:::pipe
-    HG3{{"✋ you review each task\nbefore the next one starts"}}:::gate
+    IT["⑤ implement task by task\nTDD · RED → GREEN → REFACTOR\nAI self-reviews between tasks"]:::pipe
     RC{"⑥ AI reviews the code\nfresh context · strong model"}:::judge
     RCR["verify findings\nfix code"]:::sp
-    HG4{{"✋ you review AI verdict\nbefore committing"}}:::gate
+    HG3{{"✋ you review AI verdict\nbefore committing"}}:::gate
     CC(["⑦ rewrite history into\nclean conventional commits"]):::sp
 
     ST --> PFT --> GT --> HG1 --> RP
@@ -108,13 +108,11 @@ flowchart TD
     RP -->|DO NOT PROCEED| RPR
     RPR --> RP
     HG2 --> IT
-    IT -->|after each task| HG3
-    HG3 -->|next task| IT
     IT -->|all tasks done| RC
-    RC -->|PASS| HG4
+    RC -->|PASS| HG3
     RC -->|FAIL| RCR
     RCR --> RC
-    HG4 --> CC
+    HG3 --> CC
 
     subgraph Legend
         L1(["superpowers step"]):::sp
@@ -148,8 +146,8 @@ Add a **Gates** row to the reference table for each skill that participates in t
 | Skill | Checks on entry | Writes on exit |
 |---|---|---|
 | `reviewing-plan` | `generating-tasks` stamp in `REVIEW-LOG.md` | `reviewing-plan` stamp after human approval |
-| `implementing-tasks` | `reviewing-plan` stamp in `REVIEW-LOG.md` | `implementing-tasks-T<n>` stamp per task after human approval |
-| `reviewing-code` | `implementing-tasks-T<n>` stamp (final task) in `REVIEW-LOG.md` | `reviewing-code` stamp after human approval |
+| `implementing-tasks` | `reviewing-plan` stamp in `REVIEW-LOG.md` | — (no human gate; AI self-reviews between tasks) |
+| `reviewing-code` | — | `reviewing-code` stamp after human approval |
 | `crafting-commits` | `reviewing-code` stamp in `REVIEW-LOG.md` | — (terminal step) |
 
 In each skill's reference table block, add two rows:
