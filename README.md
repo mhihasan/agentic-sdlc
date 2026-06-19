@@ -1,6 +1,6 @@
-# coding-agent-skills
+# agentic-sdlc
 
-Skills for AI coding agents. A Jira-to-PR pipeline with self-review gates at every artifact boundary and an independent AI judge before you ship.
+A gate-enforced SDLC pipeline for AI coding agents. Ticket in, reviewed PR out — with an independent AI judge at every artifact boundary before you ship.
 
 > *Review early, review often.* A flaw surfaced before coding costs nothing. The same flaw after five tasks can invalidate all five.
 
@@ -66,8 +66,8 @@ flowchart TD
 ## Installation
 
 ```bash
-git clone git@github.com:mhihasan/coding-agent-skills.git
-cd coding-agent-skills
+git clone git@github.com:mhihasan/agentic-sdlc.git
+cd agentic-sdlc
 
 # User scope — available in all projects
 ./install.sh --scope=user --tool=claude     # → ~/.claude/skills/   (Claude Code, OpenCode, Cursor)
@@ -81,6 +81,10 @@ cd coding-agent-skills
 ```
 
 Safe to re-run: existing symlinks are updated, real directories are never overwritten.
+
+## Pair with
+
+**[swe-skills](https://github.com/mhihasan/swe-skills)** — software craft skills grounded in books (DDD, clean architecture, design patterns, pragmatic engineering, system design). Complement this pipeline at implementation time.
 
 ## Quickstart
 
