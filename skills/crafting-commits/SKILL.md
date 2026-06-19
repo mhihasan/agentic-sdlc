@@ -43,8 +43,9 @@ Run these commands and collect all output before analysis:
 # 1. Confirm we're in a git repo and get current branch
 git rev-parse --abbrev-ref HEAD
 
-# 2. Fetch target branch (always fetch fresh)
+# 2. Fetch target branch and current branch remote (always fetch fresh)
 git fetch origin <target_branch>
+git fetch origin <current_branch> 2>/dev/null || true  # no-op if no remote tracking branch
 
 # 3. Find the merge base
 git merge-base HEAD origin/<target_branch>
@@ -64,9 +65,19 @@ If the user hasn't provided a target branch, ask for it before proceeding.
 
 ---
 
-### Step 1.5 — Rebase onto target branch
+### Step 1.5 — Sync remote, then rebase onto target branch
 
-Before evaluating commits, rebase onto `origin/<target_branch>` so the commit history reflects the final state against an up-to-date base:
+First, if the current branch has a remote tracking branch, pull any remote commits:
+
+```bash
+# Check if remote tracking branch exists
+git rev-parse --verify origin/<current_branch> 2>/dev/null && \
+  git rebase origin/<current_branch> || true
+```
+
+If this rebase produces conflicts, stop and report — the remote and local branches have diverged and must be reconciled before continuing.
+
+Then rebase onto `origin/<target_branch>` so the commit history reflects the final state against an up-to-date base:
 
 ```bash
 git rebase origin/<target_branch>
