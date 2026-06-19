@@ -64,6 +64,24 @@ If the user hasn't provided a target branch, ask for it before proceeding.
 
 ---
 
+### Step 1.5 — Rebase onto target branch
+
+Before evaluating commits, rebase onto `origin/<target_branch>` so the commit history reflects the final state against an up-to-date base:
+
+```bash
+git rebase origin/<target_branch>
+```
+
+**If rebase conflicts:** Stop immediately. Report the conflicting files and say:
+
+> "Rebase conflict on `<file>`. Resolve the conflict, run `git rebase --continue`, then re-run `/crafting-commits`."
+
+Do not proceed past a rebase conflict — commit evaluation on a partial rebase is meaningless.
+
+**If rebase succeeds:** Re-run the diff and log commands from Step 1 to get the updated merge base and commit list before proceeding.
+
+---
+
 ### Step 2 — Evaluate existing commits
 
 For each existing commit, assess:
