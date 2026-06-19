@@ -28,7 +28,11 @@ if [ "$IS_LOCAL" = false ]; then
 
   CLONE_DIR="$HOME/.agentic-sdlc"
 
-  if [ -d "$CLONE_DIR/.git" ]; then
+  if [ -d "$CLONE_DIR" ] && [ ! -d "$CLONE_DIR/.git" ]; then
+    echo "agentic-sdlc: $CLONE_DIR exists but is not a git repo (partial clone?)." >&2
+    echo "  Fix: rm -rf $CLONE_DIR and retry." >&2
+    exit 1
+  elif [ -d "$CLONE_DIR/.git" ]; then
     echo "Updating agentic-sdlc in $CLONE_DIR ..."
     if ! git -C "$CLONE_DIR" pull --ff-only; then
       echo "agentic-sdlc: update failed — local clone may have diverged." >&2
@@ -50,7 +54,7 @@ if [ "$IS_LOCAL" = false ]; then
 fi
 
 # ── LOCAL MODE ────────────────────────────────────────────────────────────────
-REPO_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+REPO_DIR="$here"
 SKILLS_SRC="$REPO_DIR/skills"
 
 # ── HELPERS ───────────────────────────────────────────────────────────────────
