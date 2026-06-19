@@ -19,11 +19,15 @@ Specific tool or project-scoped? → [docs/INSTALL.md](docs/INSTALL.md)
 
 ## Quickstart
 
-**Full pipeline from a Jira ticket:**
+**Start anything — ticket, idea, or resume in-progress work:**
 
 ```
-/picking-up-task https://yoursite.atlassian.net/browse/PROJ-123
+/sdlc-start https://yoursite.atlassian.net/browse/PROJ-123
+/sdlc-start "add dark mode toggle"
+/sdlc-start
 ```
+
+`/sdlc-start` detects the input type and routes to the right entry point. With no argument it checks for in-progress work and offers to resume.
 
 Each skill tells you what to run next. Full sequence:
 
@@ -82,6 +86,7 @@ flowchart TD
 
 | Skill | What it does |
 | --- | --- |
+| [`/sdlc-start`](commands/sdlc-start.md) | Universal entry point — routes tickets, URLs, ideas, or resumes in-progress work |
 | [`/picking-up-task`](skills/picking-up-task/SKILL.md) | Fetch a Jira ticket, create a local file, set up a branch |
 | [`/planning-from-spec`](skills/planning-from-spec/SKILL.md) | Read the codebase, write an implementation plan |
 | [`/generating-tasks`](skills/generating-tasks/SKILL.md) | Break the plan into small testable tasks |
