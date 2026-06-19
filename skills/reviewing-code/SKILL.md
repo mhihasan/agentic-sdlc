@@ -18,7 +18,7 @@ You are NOT autonomous — the developer confirms scope. You do NOT write or fix
 - **General mode** — no plan. A standard review of a PR, branch, staged changes, or a diff file.
 
 | Sub-mode | Target | Gather diff |
-|---|---|---|
+| --- | --- | --- |
 | `pr` | PR number | `gh pr diff {n}` + `gh pr view {n} --json title,body,author,baseRefName,headRefName,additions,deletions,changedFiles,url` |
 | `branch` | Branch | `git diff {default_branch}...{branch}` + `git log {default_branch}..{branch} --oneline` |
 | `staged` | Staged | `git diff --cached` + `git diff --cached --stat` |
@@ -59,7 +59,7 @@ grep "Human Review:.*implementing-tasks-T" <plan-dir>/REVIEW-LOG.md
 Detect languages, frameworks, datastores, test tools:
 
 | Signal | Stack |
-|---|---|
+| --- | --- |
 | `package.json`, `tsconfig.json` | Node / TypeScript |
 | `requirements.txt`, `pyproject.toml`, `*.py` | Python |
 | `go.mod` / `Cargo.toml` / `pom.xml` / `Gemfile` | Go / Rust / Java / Ruby |
@@ -72,7 +72,7 @@ Detect languages, frameworks, datastores, test tools:
 - **Conditionally** load a language/tool reference ONLY when its signal fired in step 3:
 
 | Detected | Load |
-|---|---|
+| --- | --- |
 | TypeScript | `references/checks-typescript.md` |
 | JS/TS async or runtime-heavy code | `references/checks-async-runtime.md` |
 | React / Next.js | `references/checks-react.md` |
@@ -101,7 +101,7 @@ Collect findings → deduplicate (same file:line: keep highest severity, merge i
 ## Severity Scale
 
 | Severity | Criteria | Impact |
-|---|---|---|
+| --- | --- | --- |
 | 🔴 Critical | Security vuln, data loss, crash/outage, broken core function, missing acceptance criteria | Blocks merge |
 | 🟠 High | Significant bug, major perf issue, auth/authz gap, type-safety hole | Strongly blocks |
 | 🟡 Medium | Code smell, moderate perf, missing edge-case tests, unclear error handling | Should fix |
@@ -177,6 +177,9 @@ Wait for `approve`. On approval, write (or upsert) in `<plan-dir>/REVIEW-LOG.md`
 ```
 > **Human Review:** APPROVED — YYYY-MM-DD — reviewing-code
 ```
+
+Then update `.agentic-sdlc/active/<KEY>.md` — read the file, set `step: crafting-commits`, write back. If the file does not exist, skip silently.
+
 Then ask: > Ready to proceed? `/crafting-commits` (yes/no)
 
 On yes, invoke `/crafting-commits`.
