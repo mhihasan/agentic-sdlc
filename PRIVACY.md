@@ -1,6 +1,6 @@
 # Privacy Policy
 
-**coding-agent-skills** is a local Claude Code plugin. It runs entirely on your machine and does not collect, transmit, or store any personal data.
+**agentic-sdlc** is a local Claude Code plugin. It runs entirely on your machine and does not collect, transmit, or store any personal data.
 
 - No analytics or telemetry
 - No network requests made by the plugin itself

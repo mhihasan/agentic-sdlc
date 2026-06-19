@@ -1,4 +1,4 @@
-# Contributing to coding-agent-skills
+# Contributing to agentic-sdlc
 
 Thank you for wanting to improve this pipeline. Contributions are welcome — new skills, improvements to existing ones, and bug reports.
 

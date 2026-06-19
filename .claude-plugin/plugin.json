@@ -1,11 +1,11 @@
 {
-  "name": "coding-agent-skills",
+  "name": "agentic-sdlc",
   "description": "Skills for coding agents: software craft (clean architecture, DDD, design patterns, pragmatic engineering) and an agentic dev workflow (ticket fetching, planning, task generation, TDD implementation, and code review).",
   "version": "0.0.1",
   "author": {
     "name": "Hasanul Islam"
   },
-  "homepage": "https://github.com/mhihasan/coding-agent-skills",
-  "repository": "https://github.com/mhihasan/coding-agent-skills",
+  "homepage": "https://github.com/mhihasan/agentic-sdlc",
+  "repository": "https://github.com/mhihasan/agentic-sdlc",
   "license": "MIT"
 }
