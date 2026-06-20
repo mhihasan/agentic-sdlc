@@ -11,6 +11,9 @@ license: MIT
 
 # /sdlc-start — Universal Pipeline Entry Point
 
+> Before proceeding, read [`references/sdlc-start-usage.md`](references/sdlc-start-usage.md).
+> It contains the exact detection rules, resume logic, active state schema, and mode details.
+
 Single entry point for all new work. Detects input type and routes accordingly.
 
 ## Where You Sit in the Pipeline
@@ -30,126 +33,37 @@ Single entry point for all new work. Detects input type and routes accordingly.
 [6] crafting-commits
 ```
 
-## Input Detection
+## Step 1 — Detect input type
 
-Rules applied in order:
+Apply detection rules in order (see `references/sdlc-start-usage.md` — "Input detection rules").
 
-| Priority | Input | Example | Route |
-| --- | --- | --- | --- |
-| 1 | URL | `https://site.atlassian.net/browse/PROJ-42` | `picking-up-task` |
-| 2 | Jira key | `PROJ-42` | `picking-up-task` |
-| 3 | Local file (exists on disk) | `local-dev/tickets/PROJ-42/PROJ-42.md` | `picking-up-task` |
-| 4 | Free-form text | `"add dark mode toggle"` | `superpowers:brainstorming` |
-| 5 | No argument | — | Check `.agentic-sdlc/active/`, then ask |
+- **URL / Jira key / local file** → Ticket path (Step 2a)
+- **Free-form text** → Idea path (Step 2b)
+- **No argument** → Resume check (Step 2c)
 
-**Detection logic:**
+## Step 2a — Ticket path
 
-1. Starts with `http://` or `https://` → URL → `picking-up-task`
-2. Matches pattern `[A-Z]+-[0-9]+` → Jira key → `picking-up-task`
-3. Argument is a path to a file that exists on disk → local file → `picking-up-task`
-4. Any other non-empty string → free-form idea → `superpowers:brainstorming`
-5. No argument → resume check (see Resume Logic below)
+Invoke `picking-up-task` with the argument verbatim. Do not duplicate fetch, branch, or review gate logic — `picking-up-task` owns all of it.
 
-## Resume Logic (no argument)
+After it completes and the user approves, write `.agentic-sdlc/active/<KEY>.md` using the schema in `references/sdlc-start-usage.md` — "Active state file". Then invoke `planning-from-spec` with the ticket file path.
 
-Read `.agentic-sdlc/active/` directory:
+## Step 2b — Idea path
 
-**Empty — no active work:**
-Ask: "Starting a new task — do you have a Jira ticket or URL, or do you want to brainstorm an idea from scratch?"
-Re-apply rules 1–4 to their answer.
+Invoke `superpowers:brainstorming` with the free-form text. Direct spec output to `local-dev/specs/YYYY-MM-DD-<topic>-design.md`. Do not re-implement the clarifying-question loop — the brainstorming skill owns it.
 
-**One active file:**
+After brainstorming completes and the user approves, derive a slug from the spec filename. Write `.agentic-sdlc/active/<slug>.md` using the schema in `references/sdlc-start-usage.md` — "Active state file". Then invoke `planning-from-spec` with the spec file path.
 
-```
-In progress: PROJ-42 · implementing-tasks · "Task 3 — add toggle component"
-Branch: feat/PROJ-42/add-dark-mode
+## Step 2c — Resume check (no argument)
 
-Continue? (yes / no / new)
-```
+Read `.agentic-sdlc/active/`. Follow the resume logic in `references/sdlc-start-usage.md` — "Resume logic".
 
-On `yes`: invoke the skill named in `step:` with paths from `ticket:` and `plan:`.
-On `no` or `new`: ask for new input, re-apply rules 1–4.
+## Step 3 — Converge at planning-from-spec
 
-**Multiple active files:**
-
-```
-Active work:
-  [1] PROJ-42 · implementing-tasks · "Task 3 — add toggle component"
-      branch: feat/PROJ-42/add-dark-mode
-  [2] PROJ-55 · planning-from-spec
-      branch: fix/PROJ-55/null-pointer-payment
-
-Continue which? (1 / 2 / new)
-```
-
-On number: resume that item.
-On `new`: ask for new input.
-
-## Ticket Path
-
-Invoke `picking-up-task` with the argument verbatim:
-
-```
-Using picking-up-task skill with: <argument>
-```
-
-Do not duplicate fetch, branch, or review gate logic — `picking-up-task` owns all of it.
-
-After `picking-up-task` completes and the user approves, write
-`.agentic-sdlc/active/<KEY>.md`:
-
-```markdown
-key: PROJ-42
-step: planning-from-spec
-task:
-branch: feat/PROJ-42/add-dark-mode
-ticket: local-dev/tickets/PROJ-42/PROJ-42.md
-plan:
-```
-
-Then invoke `planning-from-spec` with the ticket file path.
-
-## Idea Path
-
-Invoke `superpowers:brainstorming` with the free-form text, instructing it to
-write its spec output to `local-dev/specs/` instead of the default path:
-
-```
-Using brainstorming skill — idea: "<argument>"
-Spec output path: local-dev/specs/YYYY-MM-DD-<topic>-design.md
-```
-
-Do not re-implement the clarifying-question loop or design dialogue — the
-brainstorming skill owns all of it.
-
-After brainstorming completes and the user approves the spec, derive a slug
-from the spec filename (e.g. `dark-mode-toggle` from
-`2026-06-19-dark-mode-toggle-design.md`). Write
-`.agentic-sdlc/active/<slug>.md`:
-
-```markdown
-key: idea-dark-mode-toggle
-step: planning-from-spec
-task:
-branch:
-ticket: local-dev/specs/2026-06-19-dark-mode-toggle-design.md
-plan:
-```
-
-Then invoke `planning-from-spec` with the spec file path.
-
-## After Both Paths Converge
-
-Both paths end at `planning-from-spec`. After it completes, the pipeline
-continues with:
+Both paths end at `planning-from-spec`. After it completes, continue with:
 
 ```
 /generating-tasks <plan-file>
 ```
-
-## Reference
-
-Full usage guide, mode details, and active state schema: [`references/sdlc-start-usage.md`](references/sdlc-start-usage.md)
 
 ## You Must NOT
 
