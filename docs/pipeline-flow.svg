@@ -74,6 +74,8 @@
   <rect x="260" y="295" width="300" height="54" rx="4" fill="#0D1525" stroke="#5B8DEF" stroke-opacity="0.5" stroke-width="1"/>
   <text x="280" y="313" font-size="9" letter-spacing="2" fill="#5B8DEF">CONVERGE — BOTH PATHS</text>
   <text x="280" y="331" font-size="13" font-weight="700" fill="#DDE2EC">planning-from-spec</text>
+  <rect x="450" y="321" width="74" height="14" rx="2" fill="#1E1508" stroke="#E89A30" stroke-opacity="0.4" stroke-width="1"/>
+  <text x="487" y="332" text-anchor="middle" font-size="9" font-weight="700" fill="#E89A30">YOU APPROVE</text>
   <text x="280" y="345" font-size="10" fill="#6B7899">reads file · explores codebase · writes PLAN</text>
 
   <!-- tail arrow -->

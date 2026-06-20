@@ -1,5 +1,7 @@
 # agentic-sdlc
 
+![Pipeline simulator](docs/sdlc-start-ticket.gif)
+
 A spec-driven SDLC pipeline for AI coding agents. Start from an idea, a ticket, or a URL — finish with a reviewed PR.
 
 > *Review early, review often.* A flaw surfaced before coding costs nothing. The same flaw after five tasks can invalidate all five.
@@ -42,6 +44,8 @@ Detects input type and routes automatically. No argument resumes in-progress wor
 Reviews your staged diff by default, or pass `branch`, a PR number, or a diff file. Dispatches parallel AI judges, filters the diff by domain, produces a triage-first report. No plan file needed.
 
 ## Agentic Workflow
+
+![Pipeline simulator](docs/sdlc-start-ticket.gif)
 
 [![Pipeline flow — click to open interactive simulator](docs/pipeline-flow.svg)](https://mhihasan.github.io/agentic-sdlc/pipeline-flow.html)
 

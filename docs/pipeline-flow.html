@@ -476,7 +476,7 @@
           <!-- Converge -->
           <div class="conv-node">
             <div class="conv-ey">converge — both paths</div>
-            <div class="conv-name">planning-from-spec</div>
+            <div class="conv-name">planning-from-spec <span class="step-badge badge-gate">you approve</span></div>
             <div class="conv-desc">reads ticket or spec · explores codebase · outputs PLAN file</div>
           </div>
 
@@ -651,7 +651,7 @@ async function runSimulation() {
   await sleep(180);
 
   const steps = [
-    { name: 'planning-from-spec', detail: 'reading codebase · writing PLAN file…', done: 'PLAN-PROJ-42.md written', type: 'running' },
+    { name: 'planning-from-spec', detail: 'reading codebase · writing PLAN file…', done: 'PLAN-PROJ-42.md written', type: 'gate', badge: 'gate', badgeLabel: 'you approve' },
     { name: 'generating-tasks',   detail: 'decomposing plan into TDD tasks…', done: '7 tasks written', type: 'gate', badge: 'gate', badgeLabel: 'you approve' },
     { name: 'reviewing-plan',     detail: 'AI judge reviewing plan…', done: 'PROCEED — no blockers', type: 'judge', badge: 'proceed', badgeLabel: 'PROCEED' },
     { name: 'implementing-tasks', detail: 'TDD · task by task…', done: '7/7 tasks complete', type: 'gate', badge: 'gate', badgeLabel: 'you approve' },
