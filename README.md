@@ -16,6 +16,22 @@ curl -fsSL https://raw.githubusercontent.com/mhihasan/agentic-sdlc/main/install.
 
 Specific tool or project-scoped? → [docs/INSTALL.md](docs/INSTALL.md)
 
+<details>
+<summary>Jira prerequisites (for ticket fetching)</summary>
+
+Set two environment variables:
+
+```bash
+export JIRA_EMAIL="you@example.com"
+export JIRA_API_TOKEN="your-api-token"
+```
+
+Get your API token: [id.atlassian.com → Security → API tokens](https://id.atlassian.com/manage-profile/security/api-tokens)
+
+Add to `~/.zshrc` or `~/.bashrc` to persist across sessions.
+
+</details>
+
 
 ## Quickstart
 
