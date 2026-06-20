@@ -1,0 +1,172 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 820 540" width="820" height="540" font-family="'SF Mono','Fira Code','Cascadia Code',Consolas,monospace">
+  <defs>
+    <style>
+      .ground  { fill: #0C1118; }
+      .surface { fill: #131922; }
+      .surf2   { fill: #1A2333; }
+      .surf3   { fill: #1F2B3E; }
+      .border  { fill: none; stroke: #263045; stroke-width: 1; }
+      .text    { fill: #DDE2EC; }
+      .muted   { fill: #6B7899; }
+      .dim     { fill: #3A4560; }
+      .accent  { fill: #F5A623; }
+      .teal    { fill: #4FC3A1; }
+      .blue    { fill: #5B8DEF; }
+      .green   { fill: #3DD68C; }
+      .red     { fill: #F47067; }
+    </style>
+  </defs>
+
+  <!-- Window background -->
+  <rect width="820" height="540" rx="10" class="surface"/>
+  <rect width="820" height="540" rx="10" fill="none" stroke="#263045" stroke-width="1"/>
+
+  <!-- Title bar -->
+  <rect width="820" height="38" rx="10" class="surf2"/>
+  <rect y="28" width="820" height="10" class="surf2"/>
+  <rect y="37" width="820" height="1" fill="#263045"/>
+
+  <!-- Traffic lights -->
+  <circle cx="20" cy="19" r="5" fill="#FF5F57"/>
+  <circle cx="36" cy="19" r="5" fill="#FEBC2E"/>
+  <circle cx="52" cy="19" r="5" fill="#28C840"/>
+
+  <!-- Title -->
+  <text x="410" y="23" text-anchor="middle" font-size="11" letter-spacing="0.06" class="muted">agentic-sdlc · pipeline</text>
+
+  <!-- Tab bar -->
+  <rect y="38" width="820" height="30" class="surf2"/>
+  <rect y="67" width="820" height="1" fill="#263045"/>
+  <!-- simulate tab active -->
+  <text x="36" y="58" font-size="11" letter-spacing="0.04" class="text">simulate</text>
+  <rect x="20" y="66" width="62" height="2" fill="#F5A623"/>
+  <!-- reference tab -->
+  <text x="104" y="58" font-size="11" letter-spacing="0.04" class="muted">reference</text>
+
+  <!-- Body area -->
+  <rect x="0" y="68" width="820" height="472" rx="0" class="surface"/>
+
+  <!-- Prompt line -->
+  <text x="36" y="100" font-size="14" class="teal">❯</text>
+  <text x="52" y="100" font-size="14" font-weight="700" class="accent">/sdlc-start</text>
+  <text x="148" y="100" font-size="13" class="muted">&lt;idea | ticket | url | key&gt;</text>
+
+  <!-- Preset buttons -->
+  <rect x="36" y="112" width="34" height="18" rx="3" class="surf3" stroke="#3A4560" stroke-width="0.5" fill="#1F2B3E"/>
+  <text x="53" y="125" text-anchor="middle" font-size="9" font-weight="700" fill="rgba(245,166,35,0.8)">URL</text>
+
+  <rect x="76" y="112" width="52" height="18" rx="3" fill="#1F2B3E" stroke="#3A4560" stroke-width="0.5"/>
+  <text x="102" y="125" text-anchor="middle" font-size="9" font-weight="700" fill="rgba(245,166,35,0.8)">Jira key</text>
+
+  <rect x="134" y="112" width="56" height="18" rx="3" fill="#1F2B3E" stroke="#3A4560" stroke-width="0.5"/>
+  <text x="162" y="125" text-anchor="middle" font-size="9" font-weight="700" fill="rgba(245,166,35,0.8)">local file</text>
+
+  <rect x="196" y="112" width="96" height="18" rx="3" fill="#1F2B3E" stroke="rgba(79,195,161,0.3)" stroke-width="0.5"/>
+  <text x="244" y="125" text-anchor="middle" font-size="9" font-weight="700" fill="rgba(79,195,161,0.8)">free-form idea</text>
+
+  <rect x="298" y="112" width="126" height="18" rx="3" fill="#1F2B3E" stroke="rgba(91,141,239,0.3)" stroke-width="0.5"/>
+  <text x="361" y="125" text-anchor="middle" font-size="9" font-weight="700" fill="rgba(91,141,239,0.8)">no argument (resume)</text>
+
+  <!-- Input row -->
+  <rect x="36" y="138" width="748" height="34" rx="5" fill="#0C1118" stroke="#263045" stroke-width="1"/>
+  <text x="52" y="160" font-size="13" class="teal">❯</text>
+  <text x="68" y="160" font-size="13" font-weight="700" class="accent">/sdlc-start</text>
+  <text x="158" y="160" font-size="13" class="text">PROJ-42</text>
+  <!-- Run button -->
+  <rect x="728" y="139" width="56" height="32" rx="0" fill="rgba(245,166,35,0.1)" stroke="none"/>
+  <rect x="727" y="139" width="1" height="32" fill="#263045"/>
+  <text x="756" y="160" text-anchor="middle" font-size="10" font-weight="700" class="accent">RUN ↵</text>
+
+  <!-- Output area divider -->
+  <line x1="36" y1="190" x2="784" y2="190" stroke="#263045" stroke-width="0.5" stroke-dasharray="4,4"/>
+
+  <!-- Output lines -->
+  <!-- sys: detecting -->
+  <text x="36" y="210" font-size="11" class="muted">→ detecting input type…</text>
+
+  <!-- route line -->
+  <text x="36" y="228" font-size="11" class="muted">→ Jira key detected:</text>
+  <text x="178" y="228" font-size="11" fill="#3A4560">PROJ-42</text>
+  <text x="222" y="228" font-size="11" class="muted">→</text>
+  <text x="236" y="228" font-size="11" font-weight="700" class="accent">picking-up-task</text>
+
+  <!-- blank -->
+  <!-- step 0: picking-up-task done -->
+  <text x="36" y="252" font-size="12" class="green">✓</text>
+  <text x="54" y="252" font-size="12" font-weight="600" class="text">picking-up-task</text>
+  <text x="230" y="252" font-size="11" class="muted">branch feat/PROJ-42/add-dark-mode created</text>
+
+  <!-- step 1: planning-from-spec done -->
+  <text x="36" y="272" font-size="12" class="green">✓</text>
+  <text x="54" y="272" font-size="12" font-weight="600" class="text">planning-from-spec</text>
+  <text x="230" y="272" font-size="11" class="muted">PLAN-PROJ-42.md written</text>
+
+  <!-- step 2: generating-tasks done + gate badge -->
+  <text x="36" y="292" font-size="12" class="green">✓</text>
+  <text x="54" y="292" font-size="12" font-weight="600" class="text">generating-tasks</text>
+  <rect x="196" y="281" width="72" height="15" rx="2" fill="rgba(232,154,48,0.12)" stroke="rgba(232,154,48,0.3)" stroke-width="0.5"/>
+  <text x="232" y="292" text-anchor="middle" font-size="9" font-weight="700" fill="#E89A30" letter-spacing="0.04">YOU APPROVE</text>
+  <text x="274" y="292" font-size="11" class="muted">7 tasks written</text>
+
+  <!-- step 3: reviewing-plan done + judge badge -->
+  <text x="36" y="312" font-size="12" class="green">✓</text>
+  <text x="54" y="312" font-size="12" font-weight="600" class="text">reviewing-plan</text>
+  <rect x="185" y="301" width="56" height="15" rx="2" fill="rgba(192,132,252,0.12)" stroke="rgba(192,132,252,0.3)" stroke-width="0.5"/>
+  <text x="213" y="312" text-anchor="middle" font-size="9" font-weight="700" fill="#C084FC" letter-spacing="0.04">AI JUDGE</text>
+  <rect x="246" y="301" width="62" height="15" rx="2" fill="rgba(91,141,239,0.12)" stroke="rgba(91,141,239,0.3)" stroke-width="0.5"/>
+  <text x="277" y="312" text-anchor="middle" font-size="9" font-weight="700" class="blue" letter-spacing="0.04">PROCEED</text>
+
+  <!-- step 4: implementing-tasks RUNNING -->
+  <!-- subtle running highlight row -->
+  <rect x="28" y="320" width="764" height="22" rx="2" fill="rgba(245,166,35,0.04)"/>
+  <text x="36" y="335" font-size="12" class="accent">◌</text>
+  <text x="54" y="335" font-size="12" font-weight="600" class="accent">implementing-tasks</text>
+  <rect x="235" y="324" width="72" height="15" rx="2" fill="rgba(232,154,48,0.12)" stroke="rgba(232,154,48,0.3)" stroke-width="0.5"/>
+  <text x="271" y="335" text-anchor="middle" font-size="9" font-weight="700" fill="#E89A30" letter-spacing="0.04">YOU APPROVE</text>
+  <text x="313" y="335" font-size="11" class="muted">TDD · task by task…</text>
+
+  <!-- step 5: reviewing-code pending dim -->
+  <text x="36" y="358" font-size="12" class="dim">·</text>
+  <text x="54" y="358" font-size="12" font-weight="600" class="dim">reviewing-code</text>
+  <rect x="186" y="347" width="56" height="15" rx="2" fill="rgba(192,132,252,0.05)" stroke="rgba(192,132,252,0.15)" stroke-width="0.5"/>
+  <text x="214" y="358" text-anchor="middle" font-size="9" font-weight="700" fill="rgba(192,132,252,0.4)" letter-spacing="0.04">AI JUDGE</text>
+
+  <!-- step 6: crafting-commits pending dim -->
+  <text x="36" y="378" font-size="12" class="dim">·</text>
+  <text x="54" y="378" font-size="12" font-weight="600" class="dim">crafting-commits</text>
+  <rect x="200" y="367" width="72" height="15" rx="2" fill="rgba(232,154,48,0.05)" stroke="rgba(232,154,48,0.1)" stroke-width="0.5"/>
+  <text x="236" y="378" text-anchor="middle" font-size="9" font-weight="700" fill="rgba(232,154,48,0.3)" letter-spacing="0.04">YOU APPROVE</text>
+
+  <!-- divider before legend -->
+  <line x1="36" y1="400" x2="784" y2="400" stroke="#263045" stroke-width="1"/>
+
+  <!-- Legend row -->
+  <!-- ticket path dot -->
+  <rect x="36" y="414" width="8" height="8" rx="1" fill="rgba(245,166,35,0.6)" stroke="#F5A623" stroke-width="0.5"/>
+  <text x="50" y="422" font-size="10" class="muted">ticket path</text>
+
+  <!-- idea path dot -->
+  <rect x="114" y="414" width="8" height="8" rx="1" fill="rgba(79,195,161,0.6)" stroke="#4FC3A1" stroke-width="0.5"/>
+  <text x="128" y="422" font-size="10" class="muted">idea path</text>
+
+  <!-- gate badge legend -->
+  <rect x="190" y="412" width="72" height="14" rx="2" fill="rgba(232,154,48,0.12)" stroke="rgba(232,154,48,0.3)" stroke-width="0.5"/>
+  <text x="226" y="422" text-anchor="middle" font-size="9" font-weight="700" fill="#E89A30" letter-spacing="0.04">YOU APPROVE</text>
+  <text x="268" y="422" font-size="10" class="muted">human gate</text>
+
+  <!-- judge badge legend -->
+  <rect x="346" y="412" width="56" height="14" rx="2" fill="rgba(192,132,252,0.12)" stroke="rgba(192,132,252,0.3)" stroke-width="0.5"/>
+  <text x="374" y="422" text-anchor="middle" font-size="9" font-weight="700" fill="#C084FC" letter-spacing="0.04">AI JUDGE</text>
+  <text x="408" y="422" font-size="10" class="muted">independent subagent</text>
+
+  <!-- right side note -->
+  <text x="784" y="422" text-anchor="end" font-size="10" fill="#3A4560">git writes · human-initiated only</text>
+
+  <!-- bottom bar -->
+  <rect x="0" y="500" width="820" height="40" rx="0" class="surf2"/>
+  <rect x="0" y="496" width="820" height="4" class="surf2"/>
+  <rect x="0" y="499" width="820" height="1" fill="#263045"/>
+  <rect x="0" y="530" width="820" height="10" rx="10" class="surf2"/>
+  <text x="36" y="525" font-size="10" class="muted">▶ interactive version →</text>
+  <text x="784" y="525" text-anchor="end" font-size="10" class="dim">agentic-sdlc</text>
+</svg>

@@ -49,44 +49,9 @@ Reviews your staged diff by default, or pass `branch`, a PR number, or a diff fi
 
 ## Agentic Workflow
 
-```mermaid
-flowchart TD
-    classDef pipe fill:#dbeafe,stroke:#3b82f6,color:#1e3a5f
-    classDef judge fill:#fef3c7,stroke:#d97706,color:#78350f
-    classDef sp fill:#dcfce7,stroke:#16a34a,color:#14532d
-    classDef gate fill:#fed7aa,stroke:#ea580c,color:#7c2d12
+[![Pipeline flow — click to open interactive simulator](docs/pipeline-flow.svg)](https://claude.ai/code/artifact/78dfe844-c595-4b8f-bb93-0b3caf893b33)
 
-    SS(["⓪ start here — ticket, idea, or resume\n/sdlc-start"]):::sp
-    ST["① pick up ticket\nset up a branch\n/picking-up-task"]:::pipe
-    BR["① brainstorm idea\nwrite a spec\nsuperpowers:brainstorming"]:::pipe
-    PFT["② read the codebase\nwrite an implementation plan\n/planning-from-spec"]:::pipe
-    HG0{{"✋ you approve the plan\nor ask to revise it"}}:::gate
-    GT["③ break the plan into\nsmall testable tasks\n/generating-tasks"]:::pipe
-    HG1{{"✋ you approve the tasks\nor ask to revise them"}}:::gate
-    RP{"④ AI reviews the plan\nbefore any code is written\n/reviewing-plan"}:::judge
-    RPR["challenge or accept each finding\nupdate the plan\n/receiving-plan-review"]:::pipe
-    HG2{{"✋ you approve the plan\nor ask to revise it"}}:::gate
-    IT["⑤ write tests first, then code\ntask by task\n/implementing-tasks"]:::pipe
-    RC{"⑥ AI reviews the code\nindependent of who wrote it\n/reviewing-code"}:::judge
-    RCR["challenge or accept each finding\nfix the code"]:::sp
-    HG3{{"✋ you approve the code\nor ask to fix it"}}:::gate
-    CC(["⑦ clean up the commit history\nready to merge\n/crafting-commits"]):::sp
-
-    SS -->|ticket / URL / key| ST
-    SS -->|free-form idea| BR
-    ST --> PFT
-    BR --> PFT
-    PFT --> HG0 --> GT --> HG1 --> RP
-    RP -->|PROCEED| HG2
-    RP -->|DO NOT PROCEED| RPR
-    RPR --> RP
-    HG2 --> IT
-    IT -->|all tasks done| RC
-    RC -->|PASS| HG3
-    RC -->|FAIL| RCR
-    RCR --> RC
-    HG3 --> CC
-```
+▶ [Open interactive simulator](https://claude.ai/code/artifact/78dfe844-c595-4b8f-bb93-0b3caf893b33) — type a ticket, URL, or idea and watch it route live.
 
 ## Skills
 
