@@ -1,6 +1,6 @@
 # agentic-sdlc
 
-A gate-enforced SDLC pipeline for AI coding agents. Ticket in, reviewed PR out — with an independent AI judge at every artifact boundary before you ship.
+A spec-driven SDLC pipeline for AI coding agents. Start from an idea, a ticket, or a URL — finish with a reviewed PR.
 
 > *Review early, review often.* A flaw surfaced before coding costs nothing. The same flaw after five tasks can invalidate all five.
 
