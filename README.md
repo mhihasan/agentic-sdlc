@@ -56,9 +56,9 @@ Reviews your staged diff by default, or pass `branch`, a PR number, or a diff fi
 
 ## Agentic Workflow
 
-[![Pipeline flow — click to open interactive simulator](docs/pipeline-flow.svg)](https://claude.ai/code/artifact/78dfe844-c595-4b8f-bb93-0b3caf893b33)
+[![Pipeline flow — click to open interactive simulator](docs/pipeline-flow.svg)](https://mhihasan.github.io/agentic-sdlc/pipeline-flow.html)
 
-▶ [Open interactive simulator](https://claude.ai/code/artifact/78dfe844-c595-4b8f-bb93-0b3caf893b33) — type a ticket, URL, or idea and watch it route live.
+▶ [Open interactive simulator](https://mhihasan.github.io/agentic-sdlc/pipeline-flow.html) — type a ticket, URL, or idea and watch it route live.
 
 ## Skills
 
