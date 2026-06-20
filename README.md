@@ -47,11 +47,16 @@ Reviews your staged diff by default, or pass `branch`, a PR number, or a diff fi
 
 ▶ [Open interactive simulator](https://mhihasan.github.io/agentic-sdlc/pipeline-flow.html) — type a ticket, URL, or idea and watch it route live.
 
+## Commands
+
+| Command | What it does |
+| --- | --- |
+| [`/sdlc-start`](commands/sdlc-start.md) | Universal entry point — routes tickets, URLs, ideas, or resumes in-progress work |
+
 ## Skills
 
 | Skill | What it does |
 | --- | --- |
-| [`/sdlc-start`](commands/sdlc-start.md) | Universal entry point — routes tickets, URLs, ideas, or resumes in-progress work |
 | [`/picking-up-task`](skills/picking-up-task/SKILL.md) | Fetch a Jira ticket, create a local file, set up a branch |
 | [`/planning-from-spec`](skills/planning-from-spec/SKILL.md) | Read the codebase, write an implementation plan |
 | [`/generating-tasks`](skills/generating-tasks/SKILL.md) | Break the plan into small testable tasks |
