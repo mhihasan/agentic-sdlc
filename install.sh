@@ -125,6 +125,18 @@ link_commands() {
     fi
   done
 
+  # Link the references/ subdirectory so relative paths in commands resolve correctly.
+  if [ -d "$COMMANDS_SRC/references" ]; then
+    local refs_dest="$target_dir/references"
+    if [ -e "$refs_dest" ] && [ ! -L "$refs_dest" ]; then
+      echo "  SKIP (real dir at $refs_dest — not a managed install)"
+    else
+      ln -sfn "$COMMANDS_SRC/references" "$refs_dest"
+      echo "  LINKED: $refs_dest"
+      linked=$((linked + 1))
+    fi
+  fi
+
   echo "  → $linked linked, $skipped skipped"
 }
 
