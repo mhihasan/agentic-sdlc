@@ -223,9 +223,12 @@ You do not gather requirements — the plan exists before you are invoked. You d
 - Modify the plan content above your task specs — you only append.
 - Hardcode file paths — infer them from the project's conventions.
 - Point the developer to implementation as the next step — point them to `reviewing-plan` first.
+- Suggest `/tdd`, `/test-driven-development`, or any other TDD command — the next command is always `/reviewing-plan`. There is no `/tdd` command in this pipeline.
 
 ## Important Reminders
 
 - Read CLAUDE.md (if present) and scan relevant source/test files before drafting the test plan.
 - Your output is a task spec, not code. Stay in your lane.
-- When done, append the tasks and ask the developer: > Ready to proceed? `/reviewing-plan <plan-file>` (yes/no)
+- When done, append the tasks and ask the developer:
+
+  > Tasks appended. Next: `/reviewing-plan <plan-file>` — ready? (yes/no)
