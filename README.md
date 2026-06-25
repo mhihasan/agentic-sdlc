@@ -113,8 +113,8 @@ See [CONTRIBUTING.md](CONTRIBUTING.md) — skill format, evals, and PR guideline
 ## Pair with
 
 For software craft skills (DDD, clean architecture, design patterns, system design):
-[mhihasan/swe-skills](https://github.com/mhihasan/swe-skills)
+[mhihasan/swe-agent-skills](https://github.com/mhihasan/swe-agent-skills)
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/mhihasan/swe-skills/main/install.sh | bash
+curl -fsSL https://raw.githubusercontent.com/mhihasan/swe-agent-skills/main/install.sh | bash
 ```
