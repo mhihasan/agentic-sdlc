@@ -112,3 +112,22 @@ For software craft skills (DDD, clean architecture, design patterns, system desi
 ```bash
 curl -fsSL https://raw.githubusercontent.com/mhihasan/swe-skills/main/install.sh | bash
 ```
+
+## Contributing
+
+Adding or modifying a skill? Start with [docs/SKILL-BEST-PRACTICES.md](docs/SKILL-BEST-PRACTICES.md).
+
+Every skill must have ≥3 evals (gate / core / discipline). The eval harness lives in `evals/`:
+
+```bash
+# Validate all eval files + check coverage (deterministic, runs in CI)
+python3 evals/run.py validate
+
+# Print the RED baseline prompt (run without the skill to confirm failure)
+python3 evals/run.py baseline <skill>
+
+# Print the GREEN judge prompt (run with the skill, paste transcript here)
+python3 evals/run.py render <skill>
+```
+
+See [evals/README.md](evals/README.md) for the full RED→GREEN method and eval schema.
