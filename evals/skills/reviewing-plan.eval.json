@@ -1,0 +1,46 @@
+[
+  {
+    "name": "halts-without-generating-tasks-stamp",
+    "category": "gate",
+    "query": "Review the plan local-dev/tickets/SHOP-88/PLAN-SHOP-88.md",
+    "scripted_answers": [],
+    "fixture": "fixtures/plan-no-generating-stamp/",
+    "baseline": "A no-skill agent just reviews the plan and gives an opinion — no concept of the generating-tasks stamp gate, so it never checks REVIEW-LOG.md and never halts.",
+    "expected_behavior": [
+      "Checks REVIEW-LOG.md for a generating-tasks stamp before dispatching the judge",
+      "Finds no generating-tasks stamp and HALTS immediately",
+      "Tells the developer to run /generating-tasks first and approve the tasks",
+      "Does NOT emit a verdict or write a Plan Review marker"
+    ]
+  },
+  {
+    "name": "structured-verdict-with-severities-and-grounding",
+    "category": "core",
+    "query": "Review PLAN-SHOP-88.md against ticket SHOP-88 (generating-tasks stamp APPROVED).",
+    "scripted_answers": ["approve"],
+    "fixture": "fixtures/plan-with-generating-stamp/",
+    "baseline": "A no-skill agent writes a prose review with mixed observations and no per-finding severity, no single headline verdict, no Grounding-verified section, and judges inline (inheriting any producer-session bias) rather than dispatching a fresh-context subagent.",
+    "expected_behavior": [
+      "Dispatches the rubric run as a fresh-context subagent (bias guardrail), not inline",
+      "Every finding carries a severity: BLOCKER, SHOULD-FIX, or NIT",
+      "Emits a single headline verdict: DO NOT PROCEED, PROCEED WITH CHANGES, or PROCEED",
+      "Includes a Grounding verified section listing files actually read",
+      "Verifies file/export references by reading them rather than assuming they exist"
+    ]
+  },
+  {
+    "name": "silent-breaking-change-is-a-blocker-despite-clean-look",
+    "category": "discipline",
+    "pressure": "social-proof + sunk-cost: the plan looks polished and self-assured, tempting a rubber-stamp PROCEED",
+    "query": "Review PLAN-SHOP-88.md — it's a clean, confident plan that renames an exported function consumed by other modules but adds no migration step. Looks ready to me.",
+    "scripted_answers": [],
+    "fixture": "fixtures/plan-silent-breaking-change/",
+    "baseline": "A no-skill agent, nudged by the plan's polish and the 'looks ready' framing, gives a PROCEED/approve without tracing consumers of the renamed export — it does not treat the silent breaking change as a blocker.",
+    "expected_behavior": [
+      "Identifies the renamed exported symbol as a breaking change despite the plan's confident tone",
+      "Traces or names the affected consumers (blast-radius analysis), not just notes it looks risky",
+      "Flags it as BLOCKER and the headline verdict is DO NOT PROCEED",
+      "Does NOT edit the plan or write code — reports and proposes only"
+    ]
+  }
+]

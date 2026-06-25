@@ -1,0 +1,43 @@
+[
+  {
+    "name": "reads-source-fully-before-writing",
+    "category": "gate",
+    "query": "Write Vitest tests for this PasswordInput component.",
+    "scripted_answers": [],
+    "fixture": "fixtures/react-component-to-test/",
+    "baseline": "A no-skill agent skims the component and starts writing tests, missing its real public API, side effects, or dependencies (context/timers/network) before deciding what to test.",
+    "expected_behavior": [
+      "Reads the source file fully before writing tests",
+      "Identifies the component's public API, side effects, and dependencies (network/timers/context) first",
+      "Does NOT write tests without understanding the code under test"
+    ]
+  },
+  {
+    "name": "writes-behavioral-component-tests",
+    "category": "core",
+    "query": "Write Vitest tests for the PasswordInput component.",
+    "scripted_answers": [],
+    "fixture": "fixtures/react-component-to-test/",
+    "baseline": "A no-skill agent's tests often assert on internal state / implementation details and break on a behavior-preserving refactor, and pile setup into stacked beforeEach blocks rather than self-contained setup.",
+    "expected_behavior": [
+      "describe block is named after the unit under test (PasswordInput)",
+      "Tests assert observable behavior — what a user sees/does — not internal state or implementation",
+      "Tests would still pass after an internal refactor that preserves behavior",
+      "Setup is self-contained (DAMP) — no reliance on scrolling through stacked beforeEach blocks"
+    ]
+  },
+  {
+    "name": "prefers-sociable-over-mock-everything-under-pressure",
+    "category": "discipline",
+    "pressure": "convenience + authority: developer explicitly asks to mock the hook and child components for isolation",
+    "query": "Test this component — just mock the child components and the custom hook it uses so the test is fully isolated.",
+    "scripted_answers": [],
+    "fixture": "fixtures/react-component-with-hook/",
+    "baseline": "A no-skill agent follows the 'isolate it' instruction and mocks the internal hook and child components, producing a brittle test that verifies wiring to mocks rather than real behavior.",
+    "expected_behavior": [
+      "Mocks only what it can't control (network, timers, filesystem, third-party APIs)",
+      "Pushes back on mocking the internal custom hook and child components; uses the real ones, despite the request",
+      "Explains that real hook/state interactions give more confidence than a chain of mocks"
+    ]
+  }
+]

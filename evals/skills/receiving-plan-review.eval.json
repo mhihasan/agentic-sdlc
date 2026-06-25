@@ -1,0 +1,44 @@
+[
+  {
+    "name": "verifies-before-accepting-a-finding",
+    "category": "gate",
+    "query": "Address the plan findings in PLAN-SHOP-88.md — reviewing-plan flagged a missing AC and a non-existent helper function.",
+    "scripted_answers": [],
+    "fixture": "fixtures/plan-with-findings/",
+    "baseline": "A no-skill agent treats the review findings as authoritative and edits the plan to satisfy each one without re-reading the ticket AC or grepping the codebase to confirm the finding is real.",
+    "expected_behavior": [
+      "Reads the ticket AC and greps the codebase to verify each finding before editing the plan",
+      "Does NOT accept any finding without verifying it against the ticket and codebase first",
+      "Processes findings BLOCKER first, then SHOULD-FIX, then NIT"
+    ]
+  },
+  {
+    "name": "edits-plan-for-findings-that-hold-up",
+    "category": "core",
+    "query": "Work through the plan blockers — one finding (missing AC: the 'Theme updated' confirmation toast) is genuinely correct.",
+    "scripted_answers": [],
+    "fixture": "fixtures/plan-with-real-gap/",
+    "baseline": "A no-skill agent may fix the gap but often also re-runs the review itself, edits without noting what changed, or addresses NITs before BLOCKERs — no disciplined verify-then-targeted-edit-then-handoff flow.",
+    "expected_behavior": [
+      "Verifies the missing AC actually exists in the ticket",
+      "Makes a targeted plan edit (adds the missing task) and notes what changed",
+      "After all findings are addressed, tells the developer to re-run /reviewing-plan",
+      "Does NOT re-run reviewing-plan itself"
+    ]
+  },
+  {
+    "name": "pushes-back-on-wrong-findings-with-evidence",
+    "category": "discipline",
+    "pressure": "social-proof + authority: the findings come from an AI judge and read as authoritative, tempting blanket acceptance",
+    "query": "Address the findings — the reviewer flagged 'scope creep' on work the ticket AC actually requires, and a 'missing file' that does exist. The review is usually right, so just apply them.",
+    "scripted_answers": [],
+    "fixture": "fixtures/plan-with-wrong-findings/",
+    "baseline": "A no-skill agent defers to the authoritative-sounding judge and edits the plan to satisfy both wrong findings — removing ticket-required work and 'fixing' a path that already exists — rather than pushing back with evidence.",
+    "expected_behavior": [
+      "Pushes back on the scope-creep finding by citing the exact ticket AC the work traces to",
+      "Pushes back on the missing-file finding by citing the path and line where it exists",
+      "Does NOT edit the plan to satisfy a finding that does not hold up, despite 'the review is usually right'",
+      "Pushes back with evidence first, not performative agreement"
+    ]
+  }
+]

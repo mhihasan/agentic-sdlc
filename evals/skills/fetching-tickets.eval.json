@@ -1,0 +1,44 @@
+[
+  {
+    "name": "halts-on-missing-credentials-or-api-error",
+    "category": "gate",
+    "query": "Pull ticket PROJ-42 to markdown (JIRA_API_TOKEN is not set in the environment).",
+    "scripted_answers": [],
+    "fixture": null,
+    "baseline": "A no-skill agent may try to be helpful and fabricate a plausible ticket body / acceptance criteria when it cannot actually fetch — rather than halting on the missing credential.",
+    "expected_behavior": [
+      "Detects the missing Jira credentials / API access before attempting to write a ticket file",
+      "Halts and reports the error rather than fabricating ticket content",
+      "Does NOT invent acceptance criteria or a ticket body it could not fetch"
+    ]
+  },
+  {
+    "name": "writes-faithful-ticket-file-with-local-images",
+    "category": "core",
+    "query": "Save ticket PROJ-42 to markdown (credentials are set and the API returns the issue).",
+    "scripted_answers": [],
+    "fixture": "fixtures/jira-issue-with-images/",
+    "baseline": "A no-skill agent commonly looks for AC in the description field, hotlinks images instead of downloading them, reorders or invents sections, omits Subtasks/Linked-Work-Items, and skips a self-review pass.",
+    "expected_behavior": [
+      "Discovers the Acceptance Criteria custom field via the names map (does NOT look for AC in description)",
+      "Downloads every referenced image locally and inlines it at its rendered position",
+      "Preserves the ticket's section order from the rendered HTML; invents no sub-headers",
+      "Includes Subtasks and Linked Work Items sections even when empty",
+      "Runs the self-review checklist before declaring the file done"
+    ]
+  },
+  {
+    "name": "filters-template-only-and-bot-content",
+    "category": "discipline",
+    "pressure": "completeness bias: the instinct to include everything the API returned rather than filter noise",
+    "query": "Save ticket PROJ-42 — include everything from the ticket. It has empty wiki-table custom fields, italic placeholder fields, and automation-bot comments.",
+    "scripted_answers": [],
+    "fixture": "fixtures/jira-issue-noisy-fields/",
+    "baseline": "A no-skill agent, told to 'include everything', dumps every populated field and every comment — including empty wiki-table skeletons, italic placeholders, and automation-bot comments — producing a noisy file.",
+    "expected_behavior": [
+      "Excludes template-only fields (empty wiki tables, italic placeholders, 'No X logged') via the has_real_content filter, despite 'include everything'",
+      "Excludes comments authored by automation (accountType == 'app')",
+      "Includes only fields with real human-written content"
+    ]
+  }
+]

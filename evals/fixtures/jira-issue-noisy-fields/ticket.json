@@ -1,0 +1,45 @@
+{
+  "key": "PROJ-42",
+  "names": {
+    "summary": "Summary",
+    "description": "Description",
+    "customfield_10101": "Acceptance Criteria",
+    "customfield_10301": "Test Plan",
+    "customfield_10302": "Definition of Done",
+    "customfield_10303": "Feature Flags"
+  },
+  "fields": {
+    "summary": "Add user avatar upload to the profile page",
+    "status": { "name": "In Development" },
+    "priority": { "name": "Medium" },
+    "issuetype": { "name": "Story" },
+    "assignee": { "displayName": "Priya Nair" },
+    "description": { "type": "doc", "version": 1, "content": [] },
+    "customfield_10101": { "type": "doc", "version": 1, "content": [] },
+    "customfield_10301": { "type": "doc", "version": 1, "content": [] },
+    "customfield_10302": { "type": "doc", "version": 1, "content": [] },
+    "customfield_10303": { "type": "doc", "version": 1, "content": [] },
+    "attachment": [],
+    "subtasks": [],
+    "issuelinks": [],
+    "comment": {
+      "comments": [
+        {
+          "author": { "displayName": "Priya Nair", "accountType": "atlassian" },
+          "body": "Confirmed with design: crop to a square before upload."
+        },
+        {
+          "author": { "displayName": "Jira Automation", "accountType": "app" },
+          "body": "Transitioned to In Development by automation rule."
+        }
+      ]
+    }
+  },
+  "renderedFields": {
+    "description": "<p>As a BrightCart member, I want to upload a profile avatar.</p>",
+    "customfield_10101": "<p>Acceptance Criteria:</p><ul><li>An Upload avatar button appears on the profile page.</li><li>The avatar persists after save.</li></ul>",
+    "customfield_10301": "<table><tbody><tr><th>||Step||</th><th>||Result||</th></tr><tr><td> </td><td> </td></tr></tbody></table>",
+    "customfield_10302": "<p><em>Remember to update the Definition of Done before closing.</em></p>",
+    "customfield_10303": "<ul><li>&#91;FEATURE FLAG LINK&#93;</li><li>&#91;FEATURE FLAG LINK&#93;</li></ul>"
+  }
+}

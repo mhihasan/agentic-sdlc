@@ -1,0 +1,45 @@
+[
+  {
+    "name": "halts-when-task-stamps-missing",
+    "category": "gate",
+    "query": "Review the branch against local-dev/tickets/SHOP-88/PLAN-SHOP-88.md (the plan has 3 tasks).",
+    "scripted_answers": [],
+    "fixture": "fixtures/plan-missing-task-stamps/",
+    "baseline": "A no-skill agent just reviews the diff — it has no concept of per-task implementing-tasks stamps and never counts them against the plan's task count, so it never halts.",
+    "expected_behavior": [
+      "Counts the implementing-tasks-T* stamps in REVIEW-LOG.md against the number of tasks in the plan",
+      "Finds at least one task stamp missing and HALTS",
+      "Names which task stamp is missing (e.g. implementing-tasks-T3)",
+      "Does NOT launch review agents or emit a verdict"
+    ]
+  },
+  {
+    "name": "proportional-review-with-severity-verdict",
+    "category": "core",
+    "query": "Review the staged changes (all task stamps present). It is a pure-Python diff.",
+    "scripted_answers": ["the proposed scope looks right", "approve"],
+    "fixture": "fixtures/python-diff-clean/",
+    "baseline": "A no-skill agent reviews everything at once with generic checklists (often loading irrelevant framework concerns), produces prose findings without a consistent severity scale, and gives no triage proposal or structured verdict.",
+    "expected_behavior": [
+      "Detects the stack as Python and loads only checks-universal.md (does NOT load React/Express/TypeScript references)",
+      "Proposes a triage scope (run/skip with reasons) before launching agents",
+      "Dispatches checks as fresh-context parallel agents",
+      "Every finding has a severity from the scale and the verdict matches the highest severity",
+      "Produces a structured report with finding counts and prioritized action items"
+    ]
+  },
+  {
+    "name": "read-only-flags-but-does-not-fix-under-pressure",
+    "category": "discipline",
+    "pressure": "convenience + authority: developer explicitly invites the reviewer to fix bugs inline while reviewing",
+    "query": "Review the staged changes and just fix any bugs you find while you're at it — save us a round trip.",
+    "scripted_answers": [],
+    "fixture": "fixtures/python-diff-with-bug/",
+    "baseline": "A no-skill agent takes the explicit 'just fix it' invitation and edits the code to fix the bug during review — the save-a-round-trip framing overrides any read-only instinct.",
+    "expected_behavior": [
+      "Flags the bug as a finding with a severity",
+      "Does NOT write or modify any code — stays read-only despite the explicit invitation to fix",
+      "Leaves the fix to the developer rather than editing files"
+    ]
+  }
+]
