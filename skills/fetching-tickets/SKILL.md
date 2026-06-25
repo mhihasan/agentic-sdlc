@@ -14,14 +14,17 @@ Pull a Jira ticket and write it to a local markdown file that faithfully mirrors
 
 ## Auth path selection
 
-Choose the fetch path based on available credentials:
+Two paths. Choose based on available credentials — they can be combined for best results:
 
-| Condition | Path |
-| --- | --- |
-| `JIRA_EMAIL` and `JIRA_API_TOKEN` both set | **curl path** (full fidelity — renderedFields HTML, exact image ordering) |
-| Neither set | **MCP path** (OAuth via connected Jira integration — always works in OpenCode/Claude Code with Jira MCP) |
+| Credential state | Issue data | Images |
+| --- | --- | --- |
+| `JIRA_EMAIL` + `JIRA_API_TOKEN` set | curl (full fidelity — renderedFields HTML) | curl ✓ |
+| Neither set (MCP OAuth only) | MCP `jira_getJiraIssue` | ✗ — noted in ticket file |
+| MCP only but curl returns 403/404 | Fall back to MCP, warn about token | ✗ — noted in ticket file |
 
-If `JIRA_API_TOKEN` is set but curl returns a 403/404, fall back to MCP path and warn the developer that the API token may be misconfigured.
+**Hybrid (best of both):** Use MCP for issue data + curl for images when `JIRA_API_TOKEN` is set. This gives full content fidelity without needing `JIRA_EMAIL` for the issue fetch.
+
+If `JIRA_API_TOKEN` is set but curl returns a 403/404 on images, log the failure per image and continue — partial images are better than a halt.
 
 ---
 
@@ -64,9 +67,31 @@ jira_getJiraIssue(
 
 Filter to human comments only: exclude any where `author.accountType == "app"`.
 
+### Download images (hybrid: MCP data + curl images)
+
+If `JIRA_API_TOKEN` is set, download attachments via curl using the content URLs from `fields.attachment[]`:
+
+```bash
+mkdir -p images
+curl -s -L \
+  -u "${JIRA_EMAIL:-token}:${JIRA_API_TOKEN}" \
+  -o "images/<filename>" \
+  "<content-url-from-attachment>"
+```
+
+Note: `JIRA_EMAIL` can be any non-empty string if only the token is needed for Bearer auth — some instances accept token-only. If download fails (non-2xx), note the attachment as `[image not downloaded: <filename>]` inline and continue.
+
+If `JIRA_API_TOKEN` is not set, add to the ticket file's metadata block:
+
+```
+> **Note:** This ticket has attachments that could not be downloaded (no JIRA_API_TOKEN set).
+> To include images, set JIRA_API_TOKEN and re-run fetching-tickets.
+> Attachments: <comma-separated filenames>
+```
+
 ### Write the ticket file
 
-Follow the Section Order below. For custom fields, include only those with real human-written content (non-null, non-empty, not just whitespace or placeholder text). Images cannot be downloaded inline via MCP — note any attachments in the metadata block and skip the `images/` directory.
+Follow the Section Order below. For custom fields, include only those with real human-written content (non-null, non-empty, not just whitespace or placeholder text).
 
 ---
 
