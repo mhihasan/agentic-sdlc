@@ -72,8 +72,17 @@ link_skills() {
     dest="$target_dir/$name"
 
     if [ -e "$dest" ] && [ ! -L "$dest" ]; then
-      echo "  SKIP (real dir, not a symlink): $dest"
-      skipped=$((skipped + 1))
+      # Real dir — safe to replace only if it looks like a managed skill install
+      # (contains SKILL.md). User-created directories without SKILL.md are left alone.
+      if [ -f "$dest/SKILL.md" ]; then
+        rm -rf "$dest"
+        ln -sfn "$skill" "$dest"
+        echo "  UPDATED (replaced real dir with symlink): $dest"
+        linked=$((linked + 1))
+      else
+        echo "  SKIP (real dir, no SKILL.md — not a managed install): $dest"
+        skipped=$((skipped + 1))
+      fi
     else
       ln -sfn "$skill" "$dest"
       echo "  LINKED: $dest"
@@ -90,6 +99,12 @@ link_commands() {
 
   if [ ! -d "$COMMANDS_SRC" ]; then
     echo "  (no commands/ source directory — skipping)"
+    return 0
+  fi
+
+  # Broken symlink at target — can't mkdir through it; warn and skip.
+  if [ -L "$target_dir" ] && [ ! -d "$target_dir" ]; then
+    echo "  SKIP (broken symlink at $target_dir — remove it and re-run to install commands)"
     return 0
   fi
 
@@ -211,20 +226,6 @@ case "$TOOL-$SCOPE" in
   all-user)       install_claude_user; install_copilot_user ;;
   all-project)    install_claude_project; install_copilot_project ;;
 esac
-
-# ── DEPENDENCY CHECK ──────────────────────────────────────────────────────────
-
-SUPERPOWERS_DIR="$HOME/.claude/plugins/cache/claude-plugins-official/superpowers"
-if [ ! -d "$SUPERPOWERS_DIR" ]; then
-  echo ""
-  echo "WARNING: superpowers plugin not found at $SUPERPOWERS_DIR"
-  echo "  This workflow composes superpowers skills at several pipeline steps:"
-  echo "  test-driven-development, systematic-debugging, verification-before-completion,"
-  echo "  using-git-worktrees, dispatching-parallel-agents, finishing-a-development-branch."
-  echo "  Install it in Claude Code:"
-  echo "    /plugin install superpowers@claude-plugins-official"
-  echo "  Or visit: https://claude.com/plugins/superpowers"
-fi
 
 echo ""
 echo "Done."

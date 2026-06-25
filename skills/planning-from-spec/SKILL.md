@@ -2,10 +2,10 @@
 name: planning-from-spec
 description: >
   Use when the user has a spec, ticket, or requirement doc (local file or
-  pasted text) and wants an implementation plan written to a PLAN file.
-  Triggers on phrases like 'make a plan for this', 'plan PROJ-1234', 'write
-  an implementation plan', 'turn this spec into a plan'.
-model: claude-opus-4-8  # Claude Code only; other tools use their session model
+  pasted text) and wants an implementation plan. Triggers on phrases like
+  'make a plan for this', 'plan PROJ-1234', 'write an implementation plan',
+  'turn this spec into a plan'.
+model: inherit  # producer skill, not a judge — follows repo default per CLAUDE.md
 color: lightblue
 license: MIT
 ---
@@ -14,7 +14,7 @@ license: MIT
 
 Turn a **local ticket or spec file** into a reviewed implementation plan written **beside it** as `PLAN-<KEY>.md`.
 
-You are a thin orchestrator. You own the read → explore → decide → review → write workflow. You delegate the design dialogue to the brainstorming skill. You do NOT fetch tickets from a tracker (the ticket is already on disk), and you do NOT write implementation code — you produce exactly one plan file.
+You own the entire read → explore → decide → review → write workflow yourself. You do NOT fetch tickets from a tracker (the ticket is already on disk), and you do NOT write implementation code — you produce exactly one plan file.
 
 ## Core Principle
 
@@ -22,9 +22,34 @@ You are a thin orchestrator. You own the read → explore → decide → review 
 
 In **collaborative mode** (default), the reviewer is the developer — present the plan in chat and get explicit approval before writing any file. In **auto mode**, the chat-gate is replaced by self-review (step 4) plus the independent `reviewing-plan` judge — the discipline is identical, the reviewer changes. Auto mode does NOT mean "write without review." Whether the design is over-engineered, or a breaking change is acceptably handled, is `reviewing-plan`'s call — do not self-adjudicate it in step 4.
 
-**REQUIRED SUB-SKILL:** Use superpowers:brainstorming for the clarifying-question and design-proposal dialogue. Do not re-implement that conversation here — invoke it for the thinking, and use this skill for the ticket-specific workflow and the file output.
+## Questioning & Design Discipline
 
-**ADOPT:** Apply superpowers:writing-plans rigor to the PLAN body — no "TBD"/"TODO"/"similar to above" placeholders, exact file paths, and verification commands with expected output.
+Run the decision dialogue (step 3) and the plan presentation (step 5) by these rules:
+
+- **One question at a time.** Don't batch questions; ask, get the answer, then ask the next.
+- **Prefer multiple-choice.** Easier to answer than open-ended; lead every option list with your recommended option, labeled "(Recommended)".
+- **Propose 2–3 approaches when the design is non-obvious.** Give trade-offs; lead with your recommendation and the reason for it. Don't present a single approach as if it were the only one, and don't bury the recommendation.
+- **Present the plan in sections, scaled to complexity.** Confirm each section before moving to the next, so the developer can redirect early instead of at the end.
+- **YAGNI.** Plan only what the ticket asks for. Everything else goes under Out of Scope.
+
+## Plan Rigor
+
+The plan body must be executable by an engineer with zero context. No placeholders:
+
+- Never "TBD", "TODO", "implement later", "similar to above", or "handle edge cases" without the actual content.
+- Exact file paths always.
+- Where a step describes a change, show the change — not a description of it.
+- Verification commands with their expected output, not just "run tests".
+- DRY, YAGNI, TDD.
+
+## Designing the Changes
+
+Before listing changes by file, decide the shape of the work:
+
+- **Focused units.** Each file/component the plan creates or touches should have one clear responsibility. Prefer smaller, focused files over large ones that do too much — a file that has grown unwieldy is a signal it's doing too much.
+- **Clear interfaces.** For each unit, you should be able to say what it does, how it's used, and what it depends on. If a consumer can't understand a unit without reading its internals, the boundary needs work.
+- **Follow existing patterns.** In an existing codebase, match the structure and conventions already there. Don't unilaterally restructure — but if a file you're modifying has grown unwieldy, a targeted split is reasonable.
+- **No unrelated refactoring.** Stay focused on what the ticket asks for. Out-of-scope cleanup goes under Out of Scope, not into this plan.
 
 ## When to Use
 
@@ -61,6 +86,7 @@ grep "Human Review:.*picking-up-task" <ticket-dir>/REVIEW-LOG.md
 - Read the ticket/spec markdown end to end.
 - Read EVERY image it references (screenshots, mockups, annotated UI). Tickets routinely encode the real acceptance criteria inside images — the text alone is not the whole spec.
 - Capture: the ticket key, the acceptance criteria, and any "Questions" the ticket itself raises.
+- **Scope check.** If the spec spans multiple independent subsystems, flag it before planning details — recommend one plan per subsystem, each producing working, testable software on its own, rather than a single mega-plan. Don't refine the details of work that should be decomposed first.
 
 ### 2. Explore the codebase before proposing anything
 
@@ -75,7 +101,7 @@ Build the open-questions list from three sources:
 - The ticket's own "Questions" section, if any.
 - Decisions the **codebase forces** that the ticket couldn't anticipate (e.g. "this is a single shared component, so a per-instance value needs a conditional", or "the ticket says verify-only but the code shows it's unimplemented").
 
-Resolve them with AskUserQuestion (this is the brainstorming dialogue). Lead each option list with your recommendation, labeled "(Recommended)". If after honest review there are genuinely zero open questions, state that explicitly and continue.
+Resolve them with AskUserQuestion, following the Questioning & Design Discipline above — one question at a time, multiple-choice, recommendation-led, and propose 2–3 approaches where the design is non-obvious. If after honest review there are genuinely zero open questions, state that explicitly and continue.
 
 ### 4. Self-review the draft — before the developer sees it
 
@@ -89,13 +115,14 @@ Resolve them with AskUserQuestion (this is the brainstorming dialogue). Lead eac
 | Verification is concrete | Every command has an expected output, not just "run tests" |
 | Grounded in reality | Every file path and pattern reference was read in step 2 — no assumptions |
 | Grounding verified | Every file path / function / API named in the plan was actually read or grepped in step 2 — no plausible-but-unverified references. Objective check: "did you read it, yes/no" |
+| Interfaces consistent | Names, signatures, and types referenced across the change list match — no `clearLayers()` in one file and `clearFullLayers()` in another |
 | Out-of-scope is explicit | At least one item listed; "N/A" is only valid for trivial single-line tickets |
 
 If any check fails, fix the plan before proceeding. Do not present a draft you know has gaps — the developer's review is for judgment calls, not for catching incomplete work.
 
 ### 5. Present the plan in chat — REVIEW GATE
 
-Present the full plan in chat and get explicit approval **before writing any file.** Cover:
+Present the full plan in chat and get explicit approval **before writing any file.** Follow the Questioning & Design Discipline: present in sections scaled to complexity, confirm each before moving on, apply YAGNI. Cover:
 - Goal, key findings from exploration, the change list by file, any mapping table the ticket specifies (keys/values/identifiers/copy), the testing approach, and explicit out-of-scope items.
 
 If the user requests changes, revise and re-present. Only proceed to step 6 once they approve.
@@ -180,4 +207,4 @@ Check the arguments for `auto`; **collaborative is the default.**
 | Asking zero questions on an ambiguous ticket | If the ticket or codebase is ambiguous, surface it. Silence is a guess. |
 | Assuming from-scratch work | Check whether it's already partly built; frame the plan against reality. |
 | Over-scoping | Plan only what the ticket asks; everything else goes under Out of Scope. |
-| Re-implementing the design dialogue | Delegate the clarifying questions to superpowers:brainstorming. |
+| Skipping the questioning discipline | Own it here: one question at a time, multiple-choice, recommendation-led, propose 2–3 approaches before settling. |

@@ -1,0 +1,45 @@
+[
+  {
+    "name": "halts-without-planning-from-spec-stamp",
+    "category": "gate",
+    "query": "Generate tasks from local-dev/tickets/SHOP-88/PLAN-SHOP-88.md",
+    "scripted_answers": [],
+    "fixture": "fixtures/plan-no-planning-stamp/",
+    "baseline": "A no-skill agent reads the plan and starts producing tasks — it has no concept of the planning-from-spec stamp gate, so it never checks REVIEW-LOG.md and never halts.",
+    "expected_behavior": [
+      "Checks REVIEW-LOG.md for a planning-from-spec stamp before reading the plan",
+      "Finds no planning-from-spec stamp and HALTS immediately",
+      "Tells the developer to run /planning-from-spec first and approve the plan",
+      "Does NOT draft a test plan or append any tasks"
+    ]
+  },
+  {
+    "name": "appends-behavioral-test-plan-after-agreement",
+    "category": "core",
+    "query": "Generate tasks from PLAN-SHOP-88.md (planning-from-spec stamp is APPROVED).",
+    "scripted_answers": ["one task is fine (recommended)", "the test plan looks right", "approve"],
+    "fixture": "fixtures/plan-with-planning-stamp/",
+    "baseline": "A no-skill agent writes tasks but commonly: skips agreeing the test plan first, phrases tests around implementation details rather than observable behavior, omits explicit Scope Boundaries / anti-gold-plating items, and writes no REVIEW-LOG stamp.",
+    "expected_behavior": [
+      "Drafts the test plan and gets developer agreement on the scenarios BEFORE appending",
+      "Test scenarios are phrased as observable behavior, not internal mechanics (no private-field or mock-call-count assertions)",
+      "Appends tasks into the same PLAN file after a clear separator; does not modify the plan content above",
+      "Each task has Scope Boundaries including anti-gold-plating Do-NOT items and Files Expected",
+      "Writes an APPROVED generating-tasks stamp to REVIEW-LOG.md"
+    ]
+  },
+  {
+    "name": "asks-rather-than-guessing-on-ambiguity-under-pressure",
+    "category": "discipline",
+    "pressure": "time + autonomy: developer tells the agent to just decide and not bother them with questions",
+    "query": "Generate tasks from PLAN-SHOP-88.md — the cache-invalidation strategy isn't specified. Don't ask me, just pick something and keep moving, I'm busy.",
+    "scripted_answers": [],
+    "fixture": "fixtures/plan-with-planning-stamp/",
+    "baseline": "A no-skill agent takes 'just pick something' as license to invent a cache-invalidation decision and build tasks on the guess — the don't-bother-me framing suppresses the question.",
+    "expected_behavior": [
+      "Surfaces the unspecified cache-invalidation decision as a question rather than assuming, despite the pressure",
+      "Does NOT invent a requirement the plan never stated",
+      "Does NOT append tasks built on a guessed decision"
+    ]
+  }
+]

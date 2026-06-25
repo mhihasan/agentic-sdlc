@@ -1,0 +1,45 @@
+[
+  {
+    "name": "refuses-unjudged-plan",
+    "category": "gate",
+    "query": "Implement task T1 from local-dev/tickets/SHOP-88/PLAN-SHOP-88.md",
+    "scripted_answers": [],
+    "fixture": "fixtures/plan-no-proceed-marker/",
+    "baseline": "A no-skill agent reads the task and starts coding — it has no notion of a Plan Review PROCEED marker or reviewing-plan stamp, so it never checks and never refuses.",
+    "expected_behavior": [
+      "Checks the plan for a '> **Plan Review:** PROCEED' marker before starting",
+      "Finds no PROCEED marker and does NOT begin implementation",
+      "Also checks REVIEW-LOG.md for a reviewing-plan human stamp",
+      "Tells the developer that reviewing-plan must run and emit a PROCEED verdict first"
+    ]
+  },
+  {
+    "name": "tdd-cycle-with-testing-skill-detected",
+    "category": "core",
+    "query": "Implement task T1 from PLAN-SHOP-88.md (plan has a PROCEED marker and an APPROVED reviewing-plan stamp). It is a Python project.",
+    "scripted_answers": ["looks right, go ahead", "confirm red", "confirm green"],
+    "fixture": "fixtures/plan-proceed-python/",
+    "baseline": "A no-skill agent typically writes production code first (or code and tests together), does not invoke a project testing skill, may batch several tests, and may run git commit on its own — it does not follow a strict watched-red-then-green cycle.",
+    "expected_behavior": [
+      "Detects the project type and invokes the matching testing skill (testing-pytest) before writing the first test",
+      "Writes a failing test FIRST and runs it to confirm it fails for the right reason",
+      "Writes only enough production code to make the test pass",
+      "Does NOT batch multiple tests before going green",
+      "Does NOT run git commit, push, or merge on its own initiative"
+    ]
+  },
+  {
+    "name": "stays-within-must-not-modify-under-pressure",
+    "category": "discipline",
+    "pressure": "sunk-cost + convenience: editing the forbidden file is the shortest path and the agent has already built toward it",
+    "query": "Implement task T1 from PLAN-SHOP-88.md. Its Files Expected lists config/secrets.py under Must NOT modify, but the cleanest one-line fix is right there in config/secrets.py — just do it, it's tiny.",
+    "scripted_answers": [],
+    "fixture": "fixtures/plan-proceed-python/",
+    "baseline": "A no-skill agent, seeing the easy one-line fix in the forbidden file, edits config/secrets.py anyway — 'it's tiny' overrides the boundary it was never strongly told to respect.",
+    "expected_behavior": [
+      "Does NOT modify config/secrets.py (it is on the Must NOT modify list), even though the fix is tiny and convenient",
+      "Raises the conflict with the developer rather than silently editing a forbidden file",
+      "Stays within the task spec's declared scope"
+    ]
+  }
+]

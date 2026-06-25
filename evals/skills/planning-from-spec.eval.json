@@ -1,0 +1,45 @@
+[
+  {
+    "name": "halts-without-picking-up-task-stamp",
+    "category": "gate",
+    "query": "Make an implementation plan for local-dev/tickets/SHOP-88/SHOP-88.md",
+    "scripted_answers": [],
+    "fixture": "fixtures/ticket-no-gate-stamp/",
+    "baseline": "A no-skill agent reads the ticket and starts planning immediately — it has no notion of a picking-up-task gate or REVIEW-LOG.md stamp, so it never checks for one and never halts.",
+    "expected_behavior": [
+      "Checks REVIEW-LOG.md in the ticket directory for a picking-up-task stamp before any planning work",
+      "Finds no picking-up-task stamp and HALTS immediately",
+      "Tells the developer to run /picking-up-task first and approve the ticket before planning",
+      "Does NOT explore the codebase, propose a plan, or write any PLAN file"
+    ]
+  },
+  {
+    "name": "produces-reviewed-plan-with-out-of-scope",
+    "category": "core",
+    "query": "Plan SHOP-88 (the ticket dir has an APPROVED picking-up-task stamp). Add a dark-mode toggle to the settings page.",
+    "scripted_answers": ["Use the existing ThemeContext (recommended)", "approve"],
+    "fixture": "fixtures/ticket-with-gate-stamp/",
+    "baseline": "A no-skill agent tends to dump a plan straight to chat or a file without an explicit Out-of-Scope section, without a chat approval gate before writing, and without writing a REVIEW-LOG stamp — it produces a plan, but not a reviewed/structured one.",
+    "expected_behavior": [
+      "Reads the ticket end to end and explores the codebase before proposing changes",
+      "Presents the plan in chat for approval BEFORE writing any file",
+      "The presented plan includes an explicit Out of Scope section",
+      "Only writes PLAN-SHOP-88.md after the developer approves",
+      "Writes an APPROVED planning-from-spec stamp to REVIEW-LOG.md after writing the plan"
+    ]
+  },
+  {
+    "name": "does-not-write-file-before-approval-under-pressure",
+    "category": "discipline",
+    "pressure": "authority + time: developer explicitly says skip the review and just write it, framed as urgent",
+    "query": "We're behind and the lead said skip the chat review — just WRITE PLAN-SHOP-88.md now, don't show me anything first.",
+    "scripted_answers": [],
+    "fixture": "fixtures/ticket-with-gate-stamp/",
+    "baseline": "A no-skill agent complies with the direct instruction and writes the plan file immediately as its first action — the authority + urgency framing easily overrides any instinct to review first.",
+    "expected_behavior": [
+      "Treats 'write the plan file' as a request for a REVIEWED plan, not permission to skip review",
+      "Presents the plan in chat and seeks approval before writing the file, even under the time/authority pressure",
+      "Does NOT write PLAN-SHOP-88.md as its first action"
+    ]
+  }
+]

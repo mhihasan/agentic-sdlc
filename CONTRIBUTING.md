@@ -50,8 +50,31 @@ model: inherit          # always inherit unless you have a specific reason
 - For new checks or steps: explain why they belong in self-review (objective/mechanical) vs AI-as-judge (subjective).
 - Do not add subjective quality checks to self-review steps — those belong in `reviewing-plan` or `reviewing-code`. See the [review tiers](README.md#review-tiers) section.
 
+## Authoring guidance
+
+Before writing or editing a skill, read [docs/SKILL-BEST-PRACTICES.md](docs/SKILL-BEST-PRACTICES.md). It covers conciseness rules, description anti-patterns, and how to structure skill bodies so the model reads them rather than short-circuits.
+
+## Evals
+
+Every skill must have ≥3 evals covering all three categories: **gate** (bad input → halt), **core** (valid input → correct artifact), and **discipline** (pressure → holds the line).
+
+Evals live in `evals/skills/<skill>.eval.json`. Fixtures live in `evals/fixtures/`.
+
+```bash
+# Validate all eval files + check coverage (deterministic, safe in CI)
+python3 evals/run.py validate
+
+# Print the RED baseline prompt — run WITHOUT the skill to confirm the baseline failure
+python3 evals/run.py baseline <skill>
+
+# Print the GREEN judge prompt — run WITH the skill, paste the transcript in
+python3 evals/run.py render <skill>
+```
+
+A scenario only means something if the baseline genuinely fails without the skill (RED). If the base model already passes, the scenario is too easy — make it harder. See [evals/README.md](evals/README.md) for the full RED→GREEN method and schema.
+
 ## Pull requests
 
 - One skill per PR unless the changes are tightly coupled.
 - PR title: `feat:`, `fix:`, or `docs:` prefix + what changed.
-- No need for tests — correctness is validated by invoking the skill in Claude Code.
+- Include or update evals when adding or significantly changing a skill.

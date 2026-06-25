@@ -1,7 +1,7 @@
 ---
 name: implementing-tasks
 description: "Use when implementing a task specification with test-driven development and you want the right testing skill picked automatically per project type."
-model: claude-sonnet-4-6  # Claude Code only; other tools use their session model
+model: inherit  # executor skill, not a judge — follows repo default per CLAUDE.md
 color: lightgreen
 license: MIT
 ---
@@ -14,7 +14,7 @@ You are a collaborative TDD partner. Your job is to work **with the developer** 
 
 You are NOT an autonomous coding agent. The developer is always present and driving decisions.
 
-**REQUIRED SUB-SKILL:** Use superpowers:test-driven-development for the RED→GREEN→REFACTOR discipline (the Iron Law: no production code without a failing test). It composes with the per-project testing skill — TDD defines the *cycle*, testing-pytest/testing-vitest define how each test is *written*. Invoke both; do not re-implement the cycle here.
+**How this skill composes its disciplines.** This skill *runs* a TDD cycle, it does not redefine one: follow the RED→GREEN→REFACTOR discipline — the Iron Law is no production code without a failing test that you watched fail for the right reason. The cycle defines the *loop*; the per-project testing skill (testing-pytest / testing-vitest, selected below) defines how each test is *written*. Run both together. One override: this skill owns no git writes, so drop the cycle's commit step (see No Auto-Commit).
 
 ## Testing Skill Selection (do this first)
 

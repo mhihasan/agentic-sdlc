@@ -14,6 +14,8 @@ One command. Works on macOS, Linux, WSL, Git Bash.
 curl -fsSL https://raw.githubusercontent.com/mhihasan/agentic-sdlc/main/install.sh | bash
 ```
 
+Re-run the same command to update. It pulls the latest and re-links any new skills.
+
 Specific tool or project-scoped? → [docs/INSTALL.md](docs/INSTALL.md)
 
 <details>
@@ -103,6 +105,10 @@ Every pipeline skill accepts an optional `auto` argument. **Collaborative is the
 | Unresolvable ambiguity | Ask | **Ask** |
 
 `auto` does not chain skills. Even in auto mode, each skill is a discrete command.
+
+## Contributing
+
+See [CONTRIBUTING.md](CONTRIBUTING.md) — skill format, evals, and PR guidelines.
 
 ## Pair with
 

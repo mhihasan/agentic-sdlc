@@ -1,0 +1,38 @@
+{
+  "key": "PROJ-42",
+  "names": {
+    "summary": "Summary",
+    "description": "Description",
+    "customfield_10101": "Acceptance Criteria",
+    "customfield_10102": "Direct Link"
+  },
+  "fields": {
+    "summary": "Add user avatar upload to the profile page",
+    "status": { "name": "In Development" },
+    "priority": { "name": "Medium" },
+    "issuetype": { "name": "Story" },
+    "assignee": { "displayName": "Priya Nair" },
+    "description": { "type": "doc", "version": 1, "content": [] },
+    "customfield_10101": { "type": "doc", "version": 1, "content": [] },
+    "customfield_10102": null,
+    "attachment": [
+      {
+        "id": "20101",
+        "filename": "avatar-empty-state.png",
+        "content": "https://brightcart.atlassian.net/rest/api/3/attachment/content/20101"
+      },
+      {
+        "id": "20102",
+        "filename": "avatar-cropper.png",
+        "content": "https://brightcart.atlassian.net/rest/api/3/attachment/content/20102"
+      }
+    ],
+    "subtasks": [],
+    "issuelinks": [],
+    "comment": { "comments": [] }
+  },
+  "renderedFields": {
+    "description": "<p>As a BrightCart member, I want to upload a profile avatar so my account feels personal.</p><p><strong>Direct Link:</strong> None</p>",
+    "customfield_10101": "<p>Acceptance Criteria:</p><ul><li>An Upload avatar button appears on the profile page.<br/><img src=\"https://brightcart.atlassian.net/rest/api/3/attachment/content/20101\" alt=\"empty state\"/></li><li>Selecting an image opens a square cropper before save.<br/><img src=\"https://brightcart.atlassian.net/rest/api/3/attachment/content/20102\" alt=\"cropper\"/></li><li>The avatar persists and shows in the header after save.</li></ul>"
+  }
+}

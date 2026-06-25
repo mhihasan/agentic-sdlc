@@ -1,0 +1,43 @@
+[
+  {
+    "name": "reads-rule-references-before-writing",
+    "category": "gate",
+    "query": "Write pytest tests for this discount calculator function.",
+    "scripted_answers": [],
+    "fixture": "fixtures/python-fn-to-test/",
+    "baseline": "A no-skill agent writes tests straight from memory of generic pytest habits, without consulting any fixed rule set — so naming, magic-value, and isolation conventions are inconsistent.",
+    "expected_behavior": [
+      "Reads references/rules.md and references/practices.md before writing tests",
+      "Does NOT write tests purely from memory without consulting the rule references",
+      "Identifies happy path, edge cases, and error cases before writing"
+    ]
+  },
+  {
+    "name": "writes-behavioral-tests-following-six-rules",
+    "category": "core",
+    "query": "Write pytest tests for the discount calculator (rules references available).",
+    "scripted_answers": [],
+    "fixture": "fixtures/python-fn-to-test/",
+    "baseline": "A no-skill agent's tests commonly use vague names, inline magic numbers, share state across tests, and reach into internals — they pass but violate the six-rule standard.",
+    "expected_behavior": [
+      "Test names follow test_<verb>_<expectation>_<scenario>",
+      "No magic values — uses named constants / enums / pytest.approx for floats",
+      "One observable behavior per test; tests are self-contained with no order dependency",
+      "Tests exercise the public API, not private methods or internal state"
+    ]
+  },
+  {
+    "name": "never-mocks-internal-modules-under-pressure",
+    "category": "discipline",
+    "pressure": "convenience: the developer explicitly suggests mocking the internal dependency to keep the test simple",
+    "query": "Write tests for this service — feel free to mock the internal pricing module it imports to keep it simple.",
+    "scripted_answers": [],
+    "fixture": "fixtures/python-service-with-internal-dep/",
+    "baseline": "A no-skill agent takes the suggestion and patches the internal pricing module, producing a test that asserts against a mock of the code under test rather than real behavior.",
+    "expected_behavior": [
+      "Mocks only external boundaries (network, DB, filesystem, third-party), never the internal src module",
+      "Pushes back on mocking the internal pricing module and explains why (Rule 6), despite the suggestion",
+      "Uses the real internal dependency in the test"
+    ]
+  }
+]

@@ -1,0 +1,44 @@
+[
+  {
+    "name": "rejects-ad-hoc-description",
+    "category": "gate",
+    "query": "Start a task: add password reset",
+    "scripted_answers": [],
+    "fixture": null,
+    "baseline": "A no-skill agent helpfully accepts the description and starts inventing scope / creating a branch from a made-up key — it has no rule that a task requires a real ticket anchor.",
+    "expected_behavior": [
+      "Recognizes the input is an ad-hoc description, not a Jira URL, Jira key, or local ticket file path",
+      "Rejects immediately and asks for a ticket URL, key, or file path",
+      "Suggests /planning-from-spec with a spec file for ticketless work",
+      "Does NOT create a branch, fetch anything, or invent a ticket"
+    ]
+  },
+  {
+    "name": "fetches-then-creates-branch-then-stamps",
+    "category": "core",
+    "query": "Begin PROJ-42",
+    "scripted_answers": ["develop is correct", "branch name looks good", "approve"],
+    "fixture": "fixtures/jira-key-resolvable/",
+    "baseline": "A no-skill agent may call the Jira API directly, guess a base branch, name the branch ad hoc, possibly push it, and write no REVIEW-LOG stamp — it lacks the fetching-tickets delegation and the structured branch+stamp handoff.",
+    "expected_behavior": [
+      "Delegates the Jira fetch to the fetching-tickets skill rather than calling Jira APIs directly",
+      "Creates a branch named {type}/{key}/{slug} after confirming the base branch with the developer",
+      "Does NOT push the branch",
+      "Writes an APPROVED picking-up-task stamp to REVIEW-LOG.md and hands off to planning-from-spec"
+    ]
+  },
+  {
+    "name": "does-not-skip-branch-creation-under-pressure",
+    "category": "discipline",
+    "pressure": "authority + convenience: developer says they'll handle the branch themselves, just fetch",
+    "query": "Start PROJ-42 but just grab the ticket — I'll make the branch myself later, don't bother.",
+    "scripted_answers": ["develop is correct"],
+    "fixture": "fixtures/jira-key-resolvable/",
+    "baseline": "A no-skill agent fetches the ticket and stops, deferring branch creation as instructed — it does not treat branch setup as a mandatory, non-negotiable part of the job.",
+    "expected_behavior": [
+      "Treats branch creation as a mandatory part of this skill's job, not an optional step the developer can wave off",
+      "Does NOT hand off to planning-from-spec without completing workspace setup",
+      "Does NOT call Jira APIs directly (delegates to fetching-tickets)"
+    ]
+  }
+]

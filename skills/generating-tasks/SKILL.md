@@ -2,7 +2,7 @@
 name: generating-tasks
 description: "Use when a feature/implementation plan exists (e.g. a PLAN-<KEY>.md produced by planning-from-spec) and the user wants TDD-ready task specs created from it before implementation. Triggers on 'generate tasks from this plan', 'turn the plan into tasks', 'break the plan into TDD tasks'."
 license: MIT
-model: claude-sonnet-4-6  # Claude Code only; other tools use their session model
+model: inherit  # producer skill, not a judge — follows repo default per CLAUDE.md
 color: peachpuff
 ---
 
@@ -42,7 +42,7 @@ Do not modify the plan's existing content above your tasks — that belongs to w
 - **Suggestions beyond the plan** — allowed, but clearly marked as suggestions; the developer decides.
 - **Scope** — respect the plan's boundaries. Push back if the conversation drifts out of scope.
 - **Project conventions over assumptions** — read CLAUDE.md (if present) and scan existing test/source files to learn real paths, naming, and test framework. Never hardcode a directory layout; derive it from the project.
-- **ADOPT:** Follow superpowers:writing-plans bite-sized-task discipline — each task should complete in ~2–5 minutes, be one concrete action with complete code (no placeholders, no "similar to above"), an exact run command, and the expected output. A task spec that leaves any step as TBD is not done.
+- **Bite-sized tasks.** Each task: ~2–5 minutes, one concrete action, complete code (no placeholders, no "similar to above"), an exact run command, and the expected output. A task spec that leaves any step as TBD is not done.
 
 ## Modes
 
@@ -103,7 +103,7 @@ are objective checks — they run in **both** modes (they are not collaboration 
 | --- | --- |
 | No orphan ACs | Every AC / functional requirement in the plan maps to ≥1 test scenario |
 | No invented work | Every task traces to a plan decision; nothing added the plan didn't ask for |
-| No placeholders | Complete paths, complete scenarios — no TBD / "similar to above" (composes with the writing-plans ADOPT line) |
+| No placeholders | Complete paths, complete scenarios — no TBD / "similar to above" |
 | Behavioral tests | Scenarios phrased as observable behavior, not internal mechanics (private fields, mock-call counts) |
 | Scope bounded | Each task has Scope Boundaries incl. anti-gold-plating "Do NOT" items, and Files Expected with reasons |
 | Right-sized | No `xl` task; each ~3–8 scenarios / 2–5-min steps — else a split was proposed |
