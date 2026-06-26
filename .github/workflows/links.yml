@@ -17,6 +17,6 @@ jobs:
           args: >
             --verbose
             --no-progress
-            --exclude-path local-dev
+            --config .lychee.toml
             '**/*.md'
           fail: true
