@@ -23,6 +23,47 @@ All notable changes to coding-agent-skills are documented here.
 - `reviewing-code` Next Steps: `crafting-commits` changed from suggestion to mandatory gate
 - README: hook rewritten, quickstart added, superpowers sub-skills table added, repo renamed to `coding-agent-skills`
 
+## [0.4.0](https://github.com/mhihasan/agentic-sdlc/compare/v0.3.0...v0.4.0) (2026-06-30)
+
+
+### Features
+
+* **evals:** add eval harness ([1eaf80a](https://github.com/mhihasan/agentic-sdlc/commit/1eaf80a7394b7728a7cc1ded0de13610a15f296f))
+* **fetching-tickets:** add MCP path as primary for OAuth users ([447b3f8](https://github.com/mhihasan/agentic-sdlc/commit/447b3f82ffc9e2b0c7060bbb43f14caf23da33fb))
+* **fetching-tickets:** add MCP path as primary for OAuth users, curl as fallback ([68dd08e](https://github.com/mhihasan/agentic-sdlc/commit/68dd08ec2db9f4b8799d1ffe984fa870dd15a7a4))
+* **install:** add --tag flag to pin install to a specific release ([62251f7](https://github.com/mhihasan/agentic-sdlc/commit/62251f7f04ddb2ef83b464de00a16bf93b966e26))
+* **install:** add --tag flag to pin install to a specific release ([29f1437](https://github.com/mhihasan/agentic-sdlc/commit/29f143789dbc97c4e4ddcc94a2f8756b2e320781))
+* **install:** add --tool=opencode support ([089b846](https://github.com/mhihasan/agentic-sdlc/commit/089b84658a0cde1406f3c19b8e6553c16cad37cd))
+* **install:** add --tool=opencode support for ~/.config/opencode/ ([c5d5ae1](https://github.com/mhihasan/agentic-sdlc/commit/c5d5ae1fd46ec030b68e30bdfbba9acbf020a77b))
+* standalone skills, eval harness, and 11 skill scenarios ([dd4734d](https://github.com/mhihasan/agentic-sdlc/commit/dd4734d4dda05935e4a3cd6fff19facb7f871b26))
+
+
+### Bug Fixes
+
+* **ci:** exclude eval fixtures and SKILL-BEST-PRACTICES from link checker ([e6ea29a](https://github.com/mhihasan/agentic-sdlc/commit/e6ea29a4de22bfbf274c9e6d0917422305ad9a3b))
+* **ci:** exclude eval fixtures and SKILL-BEST-PRACTICES from link checker ([5f298e9](https://github.com/mhihasan/agentic-sdlc/commit/5f298e9637e8a859dd84290b3de5b5ee8c35b62c))
+* **ci:** lychee toml fix, eval validation, install --tag support ([a5dfded](https://github.com/mhihasan/agentic-sdlc/commit/a5dfdeda57798814068e45f4a3cf97f6c038df5e))
+* **ci:** remove invalid [output]/[options] sections from .lychee.toml ([d2a7726](https://github.com/mhihasan/agentic-sdlc/commit/d2a77263a074ce71047264f8199bc91287e24923))
+* **ci:** wire lychee config and add eval schema validation ([5a0ebcf](https://github.com/mhihasan/agentic-sdlc/commit/5a0ebcf7d7ffd9e1b6cc3fc2b893074b09153b94))
+* **ci:** wire lychee config and add eval schema validation ([a1ddbb1](https://github.com/mhihasan/agentic-sdlc/commit/a1ddbb1aabf35422ea104a1567ca15d476a445e2))
+* **fetching-tickets:** hybrid MCP+curl for images, clear note when token absent ([f056e05](https://github.com/mhihasan/agentic-sdlc/commit/f056e050672f19c0375978a7a6130a0ce930b7ba))
+* **generating-tasks:** explicitly forbid /tdd handoff, name exact next command ([9df5710](https://github.com/mhihasan/agentic-sdlc/commit/9df5710db9ff94a821fd2c7cab705a59508c6df3))
+* **install:** auto-remove broken symlink at commands target dir inste… ([f371948](https://github.com/mhihasan/agentic-sdlc/commit/f37194820a7b036e4b793d4f6148bbaea3bbbe2a))
+* **install:** auto-remove broken symlink at commands target dir instead of skipping ([abea59d](https://github.com/mhihasan/agentic-sdlc/commit/abea59d09c56b551790ae04978a713e9ad11aeed))
+* **install:** link commands/references/ so relative paths resolve ([37d4c54](https://github.com/mhihasan/agentic-sdlc/commit/37d4c546786a10614c4822a4c3fb09cc1fb49fe2))
+* **install:** link commands/references/ subdir so relative paths resolve ([a586053](https://github.com/mhihasan/agentic-sdlc/commit/a5860532d52861295a57ae2920ea289c3adbfa1b))
+* **install:** replace managed skill dirs with symlinks, handle broken commands symlink, drop stale superpowers check ([bc06df6](https://github.com/mhihasan/agentic-sdlc/commit/bc06df6b3ef7893704513200ca566cb0bcb441b8))
+* rename swe-skills → swe-agent-skills, forbid /tdd handoff in generating-tasks ([4ba6a9b](https://github.com/mhihasan/agentic-sdlc/commit/4ba6a9b43b7076fe95b0e09d4fb31a7b4ceb6b2e))
+* **sdlc-start:** inline reference content, remove external file dependency ([8e30d6b](https://github.com/mhihasan/agentic-sdlc/commit/8e30d6b8f00ef5a30d20796cd1e20d0c01ab5f2a))
+* **sdlc-start:** inline reference content, remove external file dependency ([ea96a64](https://github.com/mhihasan/agentic-sdlc/commit/ea96a64b258000e6c723a492e849f3f416b95f62))
+* **simulator:** add YOU APPROVE gate to planning-from-spec step ([e24c458](https://github.com/mhihasan/agentic-sdlc/commit/e24c4584444e745db2416152a6226042fd19f7d4))
+* **simulator:** add YOU APPROVE gate to planning-from-spec step ([d57b086](https://github.com/mhihasan/agentic-sdlc/commit/d57b086b510b4a39507a5a164cf48e373e096dce))
+
+
+### Reverts
+
+* **generating-tasks:** restore to main ([d232981](https://github.com/mhihasan/agentic-sdlc/commit/d232981a9225d295d097b2411e6ebc76b3ff3c06))
+
 ## [0.3.0](https://github.com/mhihasan/agentic-sdlc/compare/v0.2.0...v0.3.0) (2026-06-20)
 
 
