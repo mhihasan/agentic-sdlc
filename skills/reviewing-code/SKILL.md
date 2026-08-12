@@ -15,6 +15,7 @@ You are NOT autonomous — the developer confirms scope. You do NOT write or fix
 ## Two Entry Modes
 
 - **Pipeline mode** — the user points you at a plan/spec file (any `PLAN*.md`, ticket, or spec the developer provides). You verify the implementation against that plan AND run quality checks. **Task Completion Verification is always included.** If a ticket file exists alongside the plan (e.g. `local-dev/tickets/PROJ-123/PROJ-123.md`), read it too — acceptance criteria and context in the ticket take precedence over any summary in the plan. Make no assumption about which tool produced the plan or what ran before you — the plan and ticket files are the sources of truth.
+  - **`external` flag** — implementation happened outside this pipeline (a teammate's PR, a random PR you're auditing against a plan you wrote solely to review it). Usage: `/reviewing-code external pr <n> <plan-file>` (or `external branch <name> <plan-file>`). Requires an explicit plan file — no defaulting to `staged`. Skips the `implementing-tasks-T*` stamp gate (see Preflight). Everything else — plan/ticket read, stack detection, triage, agents, verdict — runs exactly as pipeline mode.
 - **General mode** — no plan. A standard review of a PR, branch, staged changes, or a diff file.
 
 | Sub-mode | Target | Gather diff |
@@ -37,16 +38,23 @@ Create a task per step.
 - **Diff size:** >3000 lines → warn about token cost, offer to scope. >8000 → strongly recommend scoping / batching.
 - If a check fails, stop and report. Don't proceed on empty/invalid data.
 
-**Gate check:** Locate `REVIEW-LOG.md` in the ticket directory. Count the `implementing-tasks-T*` stamps and compare against the number of tasks in the plan file. All tasks must be stamped before code review begins.
+**Gate check:**
 
-```bash
-grep "Human Review:.*implementing-tasks-T" <plan-dir>/REVIEW-LOG.md
-```
+- **`external` mode:** skip the `implementing-tasks-T*` stamp check entirely — there is no local implementation to stamp. Still require a `reviewing-plan` stamp (the plan itself must be approved before you review code against it):
+  ```bash
+  grep "Human Review:.*reviewing-plan" <plan-dir>/REVIEW-LOG.md
+  ```
+  Absent → halt: "This step requires a human review stamp from `reviewing-plan`. Approve the plan before reviewing external code against it." Present (AUTO or APPROVED) → proceed, and carry a note into the report: "Implementation source: external PR/branch — no implementing-tasks stamps checked (external mode)."
+- **Non-external pipeline mode:** locate `REVIEW-LOG.md` in the ticket directory. Count the `implementing-tasks-T*` stamps and compare against the number of tasks in the plan file. All tasks must be stamped before code review begins.
 
-- **Any task stamp missing:** halt:
-  > "This step requires a human review stamp for every task from `implementing-tasks`. Missing: implementing-tasks-T<n>. Approve each task before running code review."
-- **All AUTO stamps:** note — "Note: all implementing-tasks gates were AI-conducted in auto mode" — then continue.
-- **All APPROVED (or mixed):** proceed normally (mixed AUTO/APPROVED is fine).
+  ```bash
+  grep "Human Review:.*implementing-tasks-T" <plan-dir>/REVIEW-LOG.md
+  ```
+
+  - **Any task stamp missing:** halt:
+    > "This step requires a human review stamp for every task from `implementing-tasks`. Missing: implementing-tasks-T<n>. Approve each task before running code review."
+  - **All AUTO stamps:** note — "Note: all implementing-tasks gates were AI-conducted in auto mode" — then continue.
+  - **All APPROVED (or mixed):** proceed normally (mixed AUTO/APPROVED is fine).
 
 ### 2. Read the changeset (silently)
 
@@ -158,7 +166,7 @@ Fix any failures before presenting the report.
 
 General mode: save to repo root as `CODE-REVIEW-{PR-n|BRANCH-name|STAGED-date|DIFF-name}.md`. Pipeline mode: present inline.
 
-Sections: **Metadata** (mode, target, date, stack, checks run/skipped, files/lines changed) · **Review Process** checklist · **Verdict** + 2–3 sentence summary · **Finding Counts** table by severity · each run check's section (findings + comments) · **Manual Checks Required** · **Prioritized Action Items** (Must Fix / Should Address / Nice to Have).
+Sections: **Metadata** (mode, target, date, stack, checks run/skipped, files/lines changed, and — `external` mode only — "Implementation source: external PR/branch — no implementing-tasks stamps checked") · **Review Process** checklist · **Verdict** + 2–3 sentence summary · **Finding Counts** table by severity · each run check's section (findings + comments) · **Manual Checks Required** · **Prioritized Action Items** (Must Fix / Should Address / Nice to Have).
 
 ### Verdicts
 
@@ -169,7 +177,7 @@ Sections: **Metadata** (mode, target, date, stack, checks run/skipped, files/lin
 
 After presenting the report, open the gate.
 
-**Collaborative mode (default):**
+**Collaborative mode (default), non-external:**
 
 > "Review the code review report above. Type `approve` to stamp it and proceed to crafting-commits, or describe what needs fixing."
 
@@ -186,11 +194,17 @@ On yes, invoke `/crafting-commits`.
 
 A ❌ FAIL or ❌ REQUEST CHANGES verdict does not offer the gate — direct the developer to `superpowers:receiving-code-review` first.
 
+**Collaborative mode, `external`:**
+
+> "Review the code review report above. Type `approve` to stamp it, or describe what needs fixing."
+
+Wait for `approve`. On approval, write the same `REVIEW-LOG.md` stamp as above, but do NOT set `step: crafting-commits` and do NOT offer `/crafting-commits` — see Next Steps. A ❌ FAIL verdict: do not offer the gate — surface findings for the developer to relay to the PR author (see Next Steps); do not invoke `superpowers:receiving-code-review`.
+
 **Auto mode:** On PASS or PASS WITH FINDINGS, write the stamp automatically:
 ```
 > **Human Review:** AUTO — YYYY-MM-DD — reviewing-code
 ```
-On FAIL, do not write a stamp — halt and invoke `superpowers:receiving-code-review`.
+On FAIL, do not write a stamp. Non-external: halt and invoke `superpowers:receiving-code-review`. External: halt and surface findings for the developer to relay to the PR author.
 
 ## Re-review Protocol
 
@@ -200,9 +214,11 @@ When the developer says findings are addressed: load the original report, build 
 
 ## Next Steps
 
-Once the verdict is PASS (or PASS WITH FINDINGS the developer accepts):
+**Non-external mode:** once the verdict is PASS (or PASS WITH FINDINGS the developer accepts):
 
 1. **Run `crafting-commits`** — this is a **mandatory pipeline step**, not optional. `crafting-commits` proposes a clean conventional-commit history and prints the exact git commands; the developer reviews and runs them. Mandatory to invoke; human-gated to execute. (Branch finishing — merge/PR/cleanup — is `crafting-commits`' downstream, not this skill's.)
+
+**`external` mode:** the code isn't yours to commit — skip `crafting-commits` entirely, regardless of verdict. On PASS or PASS WITH FINDINGS, the pipeline ends here; offer to post findings as PR review comments (`gh pr comment` or the GitHub MCP review tools) instead of a next-step prompt. On FAIL, direct the developer to share findings with the PR author — do not invoke `superpowers:receiving-code-review` (that skill assumes you own the code).
 
 ## Modes
 
