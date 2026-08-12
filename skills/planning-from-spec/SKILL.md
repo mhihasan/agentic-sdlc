@@ -93,6 +93,20 @@ grep "Human Review:.*picking-up-task" <ticket-dir>/REVIEW-LOG.md
 - Dispatch a read-only exploration agent to map the files, components, and patterns the work touches.
 - VERIFY the agent's key claims by reading the actual files yourself. Never plan against an unread summary — a wrong assumption here propagates into every task downstream.
 - Note where the ticket may already be partly implemented (check the relevant files and recent commits), so the plan reflects reality rather than assuming from-scratch work.
+- **Check for an existing PR.** Search for one tied to this ticket key:
+  ```bash
+  gh pr list --search "<TICKET-KEY> in:title,body" --state all
+  ```
+  If unsure or the search is inconclusive, ask the developer directly: "Is there already a PR implementing this ticket?"
+- **If a PR exists, ask how this plan will be used:**
+  - **(a) Build roadmap** — the developer or an agent implements next, in this pipeline.
+  - **(b) Review rubric only** — the PR already exists; this plan exists solely so `reviewing-code` has ground truth to check that PR against. No local implementation will happen.
+
+  Record the answer with AskUserQuestion. If (b), stamp the plan header (step 6) with:
+  ```
+  > **Implementation:** exists in PR #<n> — this plan is a review rubric, not a build roadmap. Route to `reviewing-code external pr <n>` after `reviewing-plan`, not `implementing-tasks`.
+  ```
+  This flag propagates downstream — `reviewing-plan`'s handoff reads it to route correctly, and `reviewing-code` reads it to skip the `implementing-tasks` stamp gate.
 
 ### 3. Surface decisions — do not guess
 
@@ -132,6 +146,7 @@ If the user requests changes, revise and re-present. Only proceed to step 6 once
 - Write to `<ticket-dir>/PLAN-<KEY>.md`, where `<KEY>` is the ticket key (e.g. `PLAN-PROJ-1234.md`) and `<ticket-dir>` is the directory containing the source file.
 - If that file already exists, ask before overwriting.
 - Structure the file to match exactly what the user approved in chat.
+- If step 2 recorded a review-rubric answer (mode b), include the `**Implementation:**` stamp line from step 2 near the top of the file, directly under the title/ticket key.
 
 After writing the plan file, open the Review Gate.
 
@@ -169,6 +184,7 @@ On yes, invoke `/generating-tasks <path>`.
 Scale each section to the work; omit what doesn't apply.
 
 - **Title + ticket key + branch** (if a branch exists)
+- **Implementation stamp** (if step 2 found an existing PR and the developer chose "review rubric only") — `> **Implementation:** exists in PR #<n> — this plan is a review rubric, not a build roadmap.`
 - **Goal** — one paragraph, the user-facing outcome
 - **Key findings** — what exploration revealed that shapes the plan
 - **Decisions** — each confirmed decision with its rationale

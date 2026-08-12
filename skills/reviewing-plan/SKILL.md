@@ -146,11 +146,10 @@ Wait for `approve`. On approval, write (or upsert) in `<plan-dir>/REVIEW-LOG.md`
 > **Human Review:** APPROVED — YYYY-MM-DD — reviewing-plan
 ```
 
-Then update `.agentic-sdlc/active/<KEY>.md` — read the file, set `step: implementing-tasks`, write back. If the file does not exist, skip silently.
+**Check for the implementation stamp** in the plan file (`> **Implementation:** exists in PR #<n>`, written by `planning-from-spec` step 2 when the developer chose "review rubric only"):
 
-Then ask: > Ready to proceed? `/implementing-tasks <plan-file>` (yes/no)
-
-On yes, invoke `/implementing-tasks <plan-file>`.
+- **Stamp present:** implementation already exists outside this pipeline. Update `.agentic-sdlc/active/<KEY>.md` — set `step: reviewing-code`, write back (skip silently if the file doesn't exist). Then ask: > Ready to proceed? `/reviewing-code external pr <n> <plan-file>` (yes/no). On yes, invoke it.
+- **Stamp absent:** today's path. Update `.agentic-sdlc/active/<KEY>.md` — set `step: implementing-tasks`, write back. Then ask: > Ready to proceed? `/implementing-tasks <plan-file>` (yes/no). On yes, invoke `/implementing-tasks <plan-file>`.
 
 If the verdict is DO NOT PROCEED, do not offer the human gate — direct the developer to `receiving-plan-review` first.
 
@@ -202,7 +201,7 @@ Always include the **Dimensions clean** and **Grounding verified** sections — 
 Check the arguments for `auto`; **collaborative is the default.**
 
 - **Collaborative (default):** run the fresh-context judge subagent (step 0), emit the verdict, then offer to append the verdict marker (step 8) — wait for developer confirmation before writing. On PROCEED, ask: > Ready to proceed? `/implementing-tasks <plan-file>` (yes/no). On DO NOT PROCEED, direct the developer to run `receiving-plan-review` to work through the findings before re-running this review.
-- **Auto:** run the fresh-context judge subagent (step 0), emit the verdict, then append the verdict marker automatically if the verdict is PROCEED or PROCEED WITH CHANGES, then invoke `implementing-tasks` automatically. A DO NOT PROCEED verdict (any BLOCKER) halts immediately — invoke `receiving-plan-review` automatically, fix the plan, and re-run this review.
+- **Auto:** run the fresh-context judge subagent (step 0), emit the verdict, then append the verdict marker automatically if the verdict is PROCEED or PROCEED WITH CHANGES. Then check the plan file for the `> **Implementation:** exists in PR #<n>` stamp — if present, invoke `reviewing-code external pr <n> <plan-file>` automatically instead of `implementing-tasks`. A DO NOT PROCEED verdict (any BLOCKER) halts immediately — invoke `receiving-plan-review` automatically, fix the plan, and re-run this review.
 
 **Invariant in both modes:** never edit plan content; the verdict marker is the only permitted write.
 
