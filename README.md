@@ -115,7 +115,7 @@ See [CONTRIBUTING.md](CONTRIBUTING.md) — skill format, evals, and PR guideline
 | Skill set | Required | Why |
 | --- | --- | --- |
 | [Superpowers skills](https://github.com/obra/superpowers) | Optional — recommended | `/implementing-tasks` composes them when available: TDD cycle, systematic debugging, parallel agents, verification gates, code review. Falls back to built-in judgment without them. |
-| [mhihasan/swe-agent-skills](https://github.com/mhihasan/swe-agent-skills) | Optional | Software craft skills: DDD, clean architecture, design patterns, system design. |
+| [mhihasan/swe-agent-skills](https://github.com/mhihasan/swe-agent-skills) | Optional | Writing skills: de-slop, design docs, Confluence diagrams. |
 
 Install superpowers → [github.com/obra/superpowers](https://github.com/obra/superpowers)
 

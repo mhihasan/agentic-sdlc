@@ -45,7 +45,7 @@ If the ticket isn't provided, ask for it. You cannot judge scope fidelity withou
 
 ## The Rubric
 
-Run the **ALWAYS** dimensions on every plan. Run a **SIGNAL-GATED** lens only when its signal fires — do not invoke all expert lenses on every plan; that over-engineers the review itself.
+Run the **ALWAYS** dimensions on every plan.
 
 ### ALWAYS (every plan)
 
@@ -66,19 +66,6 @@ Run the **ALWAYS** dimensions on every plan. Run a **SIGNAL-GATED** lens only wh
 | 4 | **Codebase grounding** | Files/components/patterns the plan names **actually exist** and the plan follows existing conventions. **VERIFY by reading — do not guess.** Account for work that's already partly done. |
 | 7 | **Risk honesty** | Genuine open questions surfaced vs papered over; risky/irreversible steps (migrations, deletes, external calls) called out. |
 | 8 | **Decision justification** | Choices justified against the codebase ("use X because the repo already does Y"), not merely asserted. |
-
-### SIGNAL-GATED expert lenses (invoke ONLY on signal)
-
-| Lens | Invoke when the signal fires |
-| --- | --- |
-| `Skill(ddd-expert)` | CLAUDE.md says the project uses DDD, **or** the plan introduces domain/aggregate/bounded-context concepts. |
-| `Skill(clean-architecture)` | Plan introduces or crosses layer/dependency boundaries (ports/adapters, service layers). |
-| `Skill(design-patterns-expert)` | Plan introduces a named pattern or a new abstraction (registry, factory, strategy…). Use it to judge whether the pattern is warranted. |
-| `Skill(system-designing)` | Plan spans multiple services, touches storage/replication/sharding, or raises scale/consistency concerns. |
-| `Skill(pragmatic-engineer)` | General right-sizing / DRY / ETC judgment when a plan smells over- or under-built but no other lens fits. |
-| `Skill(clean-coding)` | Plan prescribes concrete code structure (naming, function shape) worth sanity-checking. |
-
-If no signal fires, run only ALWAYS + JUDGMENT. Most small plans need no expert lens.
 
 ## Workflow
 
@@ -105,7 +92,7 @@ Pass to the subagent ONLY:
 - The full text of the PLAN+TASKS file
 - The full text of the ticket/spec (and all referenced images)
 - CLAUDE.md for the target project
-- The rubric from this skill (ALWAYS, JUDGMENT, and SIGNAL-GATED dimensions + output format)
+- The rubric from this skill (ALWAYS and JUDGMENT dimensions + output format)
 
 Instruct the subagent explicitly: *"Your sole sources of truth are the plan file, the ticket/spec (including all referenced images), and CLAUDE.md. Do not rely on recalled memory, prior conversation context, or any assumptions from outside these documents. Judge the plan on its merits against the rubric."*
 
@@ -121,7 +108,7 @@ When this skill runs in a fresh session with no prior context, dispatching a sub
    - **Installed-dependency claim** (an API of a library in `node_modules`) → grep the installed package; its source is the truth for the pinned version.
    - **External claim the repo can't confirm** (a library not installed, a version that may not exist, a documented API behavior/deprecation, a third-party service's limits) → **SEARCH THE WEB.** Use the library's own docs / release notes / official source. If web search is unavailable, say so and downgrade the claim to an explicit "unverified" flag — do NOT silently trust the plan.
    - A claim you assumed and an external fact you never checked are the two ways this step fails. Note anything that doesn't exist or whose real shape differs.
-5. **Run the ALWAYS + JUDGMENT dimensions.** Invoke signal-gated lenses only where a signal fired.
+5. **Run the ALWAYS + JUDGMENT dimensions.**
 6. **Assign a severity to every finding** (see scale below).
 7. **Emit the structured verdict** (see format). Propose plan edits; do not apply them.
 8. **Append the verdict marker to the plan file** — this is the one bounded permitted write.
@@ -211,7 +198,6 @@ Check the arguments for `auto`; **collaborative is the default.**
 - Wrote "should be verified against the codebase" → STOP. *You* verify it now by reading the file.
 - Plan asserts a library API / version / external behavior and you're about to trust it → STOP. Grep the installed package, or SEARCH THE WEB against the official docs. A hallucinated external API is a BLOCKER.
 - Noted a rename/schema/cache/env change but didn't trace consumers → STOP. Do the blast-radius analysis; it's likely a BLOCKER.
-- About to invoke all six expert lenses → STOP. Only invoke a lens whose signal actually fired.
 - About to edit the plan file or write code → STOP. Report and propose only; the developer owns the plan. The verdict marker (step 8) is the one bounded exception — one status line only.
 - About to run the judgment inline without dispatching a fresh-context subagent → STOP. The bias guardrail requires a fresh context (step 0).
 - Emitting a prose essay with no verdict line → STOP. Use the structured format.
@@ -223,7 +209,6 @@ Check the arguments for `auto`; **collaborative is the default.**
 | Flat narrative, no severity | The developer can't tell stop-the-line from nitpick. Every finding gets a tier; blockers gate the verdict. |
 | Guessing file/hook names | "Plausible" ≠ "exists." Read the file. Hallucinated anchors are a BLOCKER, not a maybe. |
 | Noting a breaking change without blast radius | Trace the consumers (in a monorepo, use the CLAUDE.md consumer map). Silent breaking change = BLOCKER. |
-| Running every expert lens | Over-engineers the review. Signal-gated only. |
 | Editing the plan to "just fix it" | This skill judges and proposes. The developer applies edits. |
 | Judging scope without the ticket | You can't. Get the ticket (and its images) first. |
 | Passing internal-detail test plans | "asserts `_actions.size`" / "returns correct state shape" are SHOULD-FIX — tests must be behavioral. |
